@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Банковский квест</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .game-container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .score {
+            text-align: center;
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 20px;
+            padding: 10px;
+            background: #e3f2fd;
+            border-radius: 5px;
+        }
+        .visitor-request {
+            background: #fff3e0;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 20px 0;
+            border-left: 4px solid #ff9800;
+        }
+        .buttons {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin: 20px 0;
+        }
+        button {
+            padding: 15px;
+            font-size: 16px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            background: #2196f3;
+            color: white;
+            transition: background 0.3s;
+        }
+        button:hover {
+            background: #1976d2;
+        }
+        .result {
+            text-align: center;
+            font-size: 18px;
+            font-weight: bold;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 5px;
+        }
+        .correct {
+            background: #c8e6c9;
+            color: #2e7d32;
+        }
+        .incorrect {
+            background: #ffcdd2;
+            color: #c62828;
+        }
+        .game-over {
+            text-align: center;
+            font-size: 20px;
+            font-weight: bold;
+            padding: 20px;
+            border-radius: 5px;
+            margin: 20px 0;
+        }
+        .victory {
+            background: #c8e6c9;
+            color: #2e7d32;
+        }
+        .defeat {
+            background: #ffcdd2;
+            color: #c62828;
+        }
+        .restart-btn {
+            background: #4caf50;
+            font-size: 18px;
+            padding: 15px 30px;
+        }
+        .restart-btn:hover {
+            background: #45a049;
+        }
+    </style>
+</head>
+<body>
+    <div class="game-container">
+        <h1>Банковский квест</h1>
+        
+        <div id="game-screen">
+            <div class="score">
+                Счёт: <span id="score">0</span> | Посетитель: <span id="visitor-count">0</span>
+            </div>
+            
+            <div id="start-screen">
+                <p>Добро пожаловать! Вы — сотрудник банка. Перед вами стоит очередь посетителей.</p>
+                <p>Они будут просить о различных операциях, а ваша задача — угадать, чего именно они хотят.</p>
+                <p><strong>Правила:</strong></p>
+                <ul>
+                    <li>За правильный ответ: +1 балл</li>
+                    <li>За ошибку: -1 балл</li>
+                    <li>Победа при 10 баллах</li>
+                    <li>Поражение при -5 баллах</li>
+                </ul>
+                <button onclick="startGame()">Начать работу</button>
+            </div>
+            
+            <div id="game-play" style="display: none;">
+                <div class="visitor-request">
+                    <strong>Посетитель говорит:</strong><br>
+                    "<span id="visitor-request"></span>"
+                </div>
+                
+                <p>Что вы предложите ему сделать?</p>
+                
+                <div class="buttons">
+                    <button onclick="makeChoice('разменять мелкие деньги')">Разменять мелкие деньги</button>
+                    <button onclick="makeChoice('разменять крупные деньги')">Разменять крупные деньги</button>
+                    <button onclick="makeChoice('обменять валюту')">Сделать обмен валюты</button>
+                    <button onclick="makeChoice('отправить перевод')">Отправить перевод</button>
+                </div>
+                
+                <div id="result" class="result" style="display: none;"></div>
+                
+                <div id="next-button" style="display: none; text-align: center;">
+                    <button onclick="nextVisitor()">Следующий посетитель</button>
+                </div>
+            </div>
+            
+            <div id="game-over" style="display: none;">
+                <div id="game-over-message" class="game-over"></div>
+                <div style="text-align: center;">
+                    <button class="restart-btn" onclick="restartGame()">Сыграть снова</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let score = 0;
+        let visitorCount = 0;
+        let currentRequest = '';
+        
+        const requests = [
+            {
+                text: "У меня много мелочи, хочу поменять на крупные купюры",
+                answer: "разменять мелкие деньги"
+            },
+            {
+                text: "Мне нужно разменять эту тысячную купюру",
+                answer: "разменять крупные деньги"
+            },
+            {
+                text: "Хочу обменять доллары на рубли",
+                answer: "обменять валюту"
+            },
+            {
+                text: "Нужно отправить деньги родственникам в другой город",
+                answer: "отправить перевод"
+            },
+            {
+                text: "У меня куча монет, поменяйте на банкноты",
+                answer: "разменять мелкие деньги"
+            },
+            {
+                text: "Разбейте мне эту пятитысячную, пожалуйста",
+                answer: "разменять крупные деньги"
+            },
+            {
+                text: "Мне нужны евро вместо рублей",
+                answer: "обменять валюту"
+            },
+            {
+                text: "Переведите деньги на карту жены",
+                answer: "отправить перевод"
+            },
+            {
+                text: "Поменяйте мне мелочь на крупные деньги",
+                answer: "разменять мелкие деньги"
+            },
+            {
+                text: "Нужно разменять крупную купюру на мелкие",
+                answer: "разменять крупные деньги"
+            },
+            {
+                text: "Купите у меня валюту",
+                answer: "обменять валюту"
+            },
+            {
+                text: "Отправьте денежный перевод в Москву",
+                answer: "отправить перевод"
+            }
+        ];
+        
+        function startGame() {
+            score = 0;
+            visitorCount = 0;
+            document.getElementById('start-screen').style.display = 'none';
+            document.getElementById('game-over').style.display = 'none';
+            document.getElementById('game-play').style.display = 'block';
+            updateScore();
+            nextVisitor();
+        }
+        
+        function nextVisitor() {
+            if (score >= 10) {
+                gameOver(true);
+                return;
+            }
+            if (score <= -5) {
+                gameOver(false);
+                return;
+            }
+            
+            visitorCount++;
+            const randomRequest = requests[Math.floor(Math.random() * requests.length)];
+            currentRequest = randomRequest.answer;
+            
+            document.getElementById('visitor-request').textContent = randomRequest.text;
+            document.getElementById('result').style.display = 'none';
+            document.getElementById('next-button').style.display = 'none';
+            
+            // Показываем кнопки выбора
+            const buttons = document.querySelectorAll('.buttons button');
+            buttons.forEach(btn => btn.style.display = 'block');
+            
+            updateScore();
+        }
+        
+        function makeChoice(choice) {
+            const resultDiv = document.getElementById('result');
+            const nextBtn = document.getElementById('next-button');
+            
+            // Скрываем кнопки выбора
+            const buttons = document.querySelectorAll('.buttons button');
+            buttons.forEach(btn => btn.style.display = 'none');
+            
+            if (choice === currentRequest) {
+                score++;
+                resultDiv.innerHTML = 'Правильно! +1 балл';
+                resultDiv.className = 'result correct';
+            } else {
+                score--;
+                resultDiv.innerHTML = 'Неправильно! -1 балл';
+                resultDiv.className = 'result incorrect';
+            }
+            
+            resultDiv.style.display = 'block';
+            nextBtn.style.display = 'block';
+            updateScore();
+        }
+        
+        function updateScore() {
+            document.getElementById('score').textContent = score;
+            document.getElementById('visitor-count').textContent = visitorCount;
+        }
+        
+        function gameOver(victory) {
+            document.getElementById('game-play').style.display = 'none';
+            document.getElementById('game-over').style.display = 'block';
+            
+            const messageDiv = document.getElementById('game-over-message');
+            if (victory) {
+                messageDiv.innerHTML = '🎉 Поздравляем! 🎉<br>Вы отлично справились и набрали 10 баллов!';
+                messageDiv.className = 'game-over victory';
+            } else {
+                messageDiv.innerHTML = '😞 Игра окончена 😞<br>Слишком много ошибок. Попробуйте снова!';
+                messageDiv.className = 'game-over defeat';
+            }
+        }
+        
+        function restartGame() {
+            startGame();
+        }
+    </script>
+</body>
+</html>
