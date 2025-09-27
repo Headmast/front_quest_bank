@@ -1,0 +1,210 @@
+:: StoryTitle
+Gazik
+
+
+:: StoryData
+{
+  "ifid": "2EEED075-55CA-417E-9E64-3386EAE6FE05",
+  "format": "Harlowe",
+  "format-version": "3.3.9",
+  "start": "Start",
+  "zoom": 1
+}
+
+
+:: CheckAnswer {"position":"625,500","size":"100,100"}
+\:: CheckAnswer
+{
+    (if: $playerChoice is $correctAnswer)[
+        (set: $score to $score + 1)
+        (set: $isCorrect to true)
+    ]
+    (else:)[
+        (set: $score to $score - 1)
+        (set: $isCorrect to false)
+    ]
+}
+
+<div class="scorebox"><strong>Счёт: $score | Посетитель: $visitorCount</strong></div>
+
+(if: $isCorrect)[
+<div style="background: #c8e6c9; color: #2e7d32; text-align: center; font-size: 18px; font-weight: bold; padding: 15px; margin: 20px 0; border-radius: 5px;">
+<strong>Правильно! +1 балл</strong>
+</div>
+]
+(else:)[
+<div style="background: #ffcdd2; color: #c62828; text-align: center; font-size: 18px; font-weight: bold; padding: 15px; margin: 20px 0; border-radius: 5px;">
+<strong>Неправильно! -1 балл</strong>
+</div>
+]
+
+<div class="btns" style="display:grid;grid-template-columns:1fr;gap:12px;margin-top:20px;">
+(link-goto: "Следующий посетитель", "NextVisitor")
+</div>
+
+
+
+:: Defeat {"position":"975,500","size":"100,100"}
+\:: Defeat
+<div style="text-align: center; font-size: 20px; font-weight: bold; padding: 20px; border-radius: 5px; margin: 20px 0; background: #ffcdd2; color: #c62828;">
+😞 <strong>Игра окончена</strong> 😞<br>
+Слишком много ошибок. Попробуйте снова!
+</div>
+
+<div class="scorebox"><strong>Финальный счёт: $score | Обслужено посетителей: $visitorCount</strong></div>
+
+<div class="btns" style="display:grid;grid-template-columns:1fr;gap:12px;margin-top:20px;">
+(link-goto: "Сыграть снова", "Start")
+</div>
+
+
+:: NextVisitor {"position":"625,350","size":"100,100"}
+\:: NextVisitor
+{
+    (if: $score >= 2)[
+        (go-to: "Victory")
+    ]
+    (else-if: $score <= -1)[
+        (go-to: "Defeat")
+    ]
+    (else:)[
+        (set: $visitorCount to $visitorCount + 1)
+        
+        (set: $requests to (a: 
+            (dm: "text", "У меня много мелочи, хочу поменять на крупные купюры", "answer", "мелкие"),
+            (dm: "text", "Мне нужно разменять эту тысячную купюру", "answer", "крупные"),
+            (dm: "text", "Хочу обменять доллары на рубли", "answer", "валюта"),
+            (dm: "text", "Нужно отправить деньги родственникам в другой город", "answer", "перевод"),
+            (dm: "text", "У меня куча монет, поменяйте на банкноты", "answer", "мелкие"),
+            (dm: "text", "Разбейте мне эту пятитысячную, пожалуйста", "answer", "крупные"),
+            (dm: "text", "Мне нужны евро вместо рублей", "answer", "валюта"),
+            (dm: "text", "Переведите деньги на карту жены", "answer", "перевод"),
+            (dm: "text", "Поменяйте мне мелочь на крупные деньги", "answer", "мелкие"),
+            (dm: "text", "Нужно разменять крупную купюру на мелкие", "answer", "крупные"),
+            (dm: "text", "Купите у меня валюту", "answer", "валюта"),
+            (dm: "text", "Отправьте денежный перевод в Москву", "answer", "перевод")
+        ))
+        
+        (set: $currentRequest to (either: ...$requests))
+        (set: $requestText to $currentRequest's "text")
+        (set: $correctAnswer to $currentRequest's "answer")
+    ]
+}
+
+<div class="scorebox"><strong>Счёт: $score | Посетитель: $visitorCount</strong></div>
+
+
+<div class="requestbox">
+<strong>Посетитель говорит:</strong><br>
+"$requestText"
+</div>
+
+<strong>Что вы предложите ему сделать?</strong>
+
+<div class="btns">
+(link: "Разменять мелкие деньги")[
+  (set: $playerChoice to "мелкие")
+  (go-to: "CheckAnswer")
+]
+(link: "Разменять крупные деньги")[
+  (set: $playerChoice to "крупные")
+  (go-to: "CheckAnswer")
+]
+(link: "Сделать обмен валюты")[
+  (set: $playerChoice to "валюта")
+  (go-to: "CheckAnswer")
+]
+(link: "Отправить перевод")[
+  (set: $playerChoice to "перевод")
+  (go-to: "CheckAnswer")
+]
+</div>
+
+
+:: Start {"position":"700,200","size":"100,100"}
+\:: Start [tags:start]
+{
+    (set: $score to 0)
+    (set: $visitorCount to 0)
+    (set: $gameStarted to true)
+}
+
+<h1>Банковский квест</h1>
+
+Добро пожаловать! Вы — сотрудник банка. Перед вами стоит очередь посетителей.
+Они будут просить о различных операциях, а ваша задача — угадать, чего именно они хотят.
+
+<strong>Правила:</strong>
+• За правильный ответ: +1 балл
+• За ошибку: -1 балл  
+• Победа при 10 баллах
+• Поражение при -5 баллах
+
+[[Начать работу->NextVisitor]]
+
+
+:: Victory {"position":"850,500","size":"100,100"}
+\:: Victory
+
+<div style="text-align: center; font-size: 20px; font-weight: bold; padding: 20px; border-radius: 5px; margin: 20px 0; background: #c8e6c9; color: #2e7d32;">
+🎉 <strong>Поздравляем!</strong> 🎉<br>
+Вы отлично справились и набрали 10 баллов!
+</div>
+
+<div class="scorebox"><strong>Финальный счёт: $score | Обслужено посетителей: $visitorCount</strong></div>
+
+<div class="btns" style="display:grid;grid-template-columns:1fr;gap:12px;margin-top:20px;">
+(link-goto: "Сыграть снова", "Start")
+</div>
+
+
+:: StoryStylesheet [stylesheet]
+.btns tw-link {
+  display: block;
+  margin: 8px 0;
+  padding: 12px 14px;
+  background: #2196f3;
+  color: #fff;
+  border-radius: 8px;
+  text-align: center;
+  font-weight: 600;
+  text-decoration: none;
+}
+.btns tw-link:hover { background: #1976d2; }
+
+/* Блок счёта */
+.scorebox {
+  background: #263238;      /* тёмно‑синий‑серый */
+  color: #FFFFFF;           /* белый текст */
+  padding: 10px 12px;
+  border-radius: 8px;
+  text-align: center;
+  font-weight: 700;
+  margin: 12px 0;
+}
+
+/* Блок с репликой посетителя */
+.requestbox {
+  background: #37474F;      /* ещё один тёмный тон */
+  color: #FFFFFF;
+  padding: 14px 16px;
+  border-left: 4px solid #FF9800; /* акцентная полоска */
+  border-radius: 8px;
+  margin: 16px 0;
+}
+
+/* Кнопки-опции вертикально (если используете .btns контейнер) */
+.btns tw-link {
+  display: block;
+  margin: 8px 0;
+  padding: 12px 14px;
+  background: #1976D2;      /* насыщенный синий */
+  color: #FFFFFF;
+  border-radius: 8px;
+  text-align: center;
+  font-weight: 600;
+  text-decoration: none;
+}
+.btns tw-link:hover {
+  background: #0D47A1;      /* темнее при наведении */
+}
