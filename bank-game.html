@@ -1,10 +1,14 @@
 <!DOCTYPE html>
 <html>
+
 <head>
     <title>Банковский квест</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
-        * { box-sizing: border-box; }
+        * {
+            box-sizing: border-box;
+        }
+
         body {
             margin: 0;
             font-family: "Segoe UI", Roboto, Arial, sans-serif;
@@ -20,9 +24,9 @@
             padding: 6px 10px;
             font-size: 0.85rem;
             text-align: right;
-            background: rgba(255,255,255,0.7);
+            background: rgba(255, 255, 255, 0.7);
         }
-        
+
         /* Основная игровая зона разбита горизонтально */
         .game-wrapper {
             flex: 1;
@@ -34,33 +38,80 @@
 
         /* Верх: персонаж + облако реплики */
         .scene {
+            width: 100%;
+            max-width: 560px;
+            margin-top: 5vh;
+            padding: 0 12px;
+            /* чтобы край облака не прилипал к краям экрана */
+        }
+
+        .scene-anchor {
             position: relative;
             width: 100%;
-            max-width: 500px;
-            margin-top: 5vh;
+            max-width: 560px;
+            margin: 0 auto;
+            /* Вместо «персонаж стоит на нижней линии» — центрируем по высоте */
+            display: grid;
+            align-items: center;
+            /* центруем по вертикали */
+            justify-items: start;
+            /* персонаж слева */
+            aspect-ratio: 16 / 10;
+            /* стабильная рамка сцены */
         }
+
+        /* Персонаж: не больше 48% ширины сцены, авто-высота, без «прилипаний» вниз */
         .visitor-img {
-            width: 40%;
-            max-width: 220px;
+            width: min(42%, 220px);
+            /* как было «ок», но ограничим сверху */
+            height: auto;
+            max-height: 80%;
+            /* не раздувается вертикально */
+            object-fit: contain;
+            z-index: 1;
         }
+
+        :root {
+            --bubble-top: 8%;
+            /* поднять чуть выше центра */
+            --bubble-left: 40%;
+            /* сдвинуть правее от головы персонажа */
+            --bubble-width: 58%;
+        }
+
         .speech {
             position: absolute;
-            top: -10px;
-            right: -10px;
-            width: 80%;
-            max-width: 340px;
+            top: var(--bubble-top);
+            left: var(--bubble-left);
+            width: var(--bubble-width);
+            height: auto;
+            object-fit: contain;
+            z-index: 2;
             pointer-events: none;
         }
+
+
         .speech-text {
             position: absolute;
-            top: 20%;
-            left: 10%;
-            width: 80%;
-            font-size: 1rem;
-            font-weight: 600;
-            line-height: 1.3;
-            color: #000;
+            /* Внутренние поля относительно пузыря */
+            top: calc(var(--bubble-top) + 25%);
+            left: calc(var(--bubble-left) + 9%);
+            width: calc(var(--bubble-width) - 18%);
+            max-height: 46%;
+
+            overflow: hidden;
+            overflow-wrap: anywhere;
+            word-break: break-word;
+            hyphens: auto;
+            line-height: 1.35;
+
+            /* Размер шрифта адаптивный, но с верхней границей */
+            font-size: clamp(14px, 2.2vw, 19px);
+            font-weight: 700;
+            color: #111;
+            z-index: 3;
         }
+
 
         /* Нижняя зона с вариантами ответов */
         .choices {
@@ -71,6 +122,7 @@
             gap: 14px;
             margin: 5vh 0;
         }
+
         .choices button {
             padding: 16px 14px;
             border: none;
@@ -82,8 +134,14 @@
             cursor: pointer;
             transition: background 0.3s;
         }
-        .choices button:hover { background: #0d47a1; }
-        .choices button:active { transform: scale(0.97); }
+
+        .choices button:hover {
+            background: #0d47a1;
+        }
+
+        .choices button:active {
+            transform: scale(0.97);
+        }
 
         /* Всплывающий индикатор правильности */
         .toast {
@@ -91,43 +149,59 @@
             top: 10vh;
             left: 50%;
             transform: translateX(-50%);
-            background: rgba(255,255,255,0.9);
+            background: rgba(255, 255, 255, 0.9);
             padding: 14px 20px;
             border-radius: 8px;
             font-size: 1rem;
             font-weight: 700;
             color: #000;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
             display: none;
             z-index: 9999;
         }
 
-        /* Планшеты и выше — сетка 2×2 */
-        @media (min-width: 600px) {
-            .choices {
-                display: grid;
-                grid-template-columns: 1fr 1fr;
-                gap: 16px;
+        @media (max-width: 480px) {
+            :root {
+                --bubble-top: 6%;
+                --bubble-left: 38%;
+                --bubble-width: 60%;
             }
-            .speech-text { font-size: 1.1rem; }
+
+            .visitor-img {
+                width: min(44%, 200px);
+                max-height: 78%;
+            }
+
+            .speech-text {
+                top: calc(var(--bubble-top) + 11%);
+                left: calc(var(--bubble-left) + 8%);
+                width: calc(var(--bubble-width) - 16%);
+                max-height: 48%;
+                font-size: clamp(13px, 3.6vw, 18px);
+            }
         }
 
-        /* Десктоп */
-        @media (min-width: 992px) {
-            .speech-text { font-size: 1.2rem; }
-            .choices button { font-size: 1.1rem; }
+        @media (min-width: 768px) {
+            :root {
+                --bubble-top: 7%;
+                --bubble-left: 41%;
+                --bubble-width: 56%;
+            }
         }
     </style>
 </head>
+
 <body>
     <header>Счёт: <span id="score">0</span> / Посетители: <span id="visitor-count">0</span></header>
 
     <div class="game-wrapper">
         <!-- Сцена -->
         <div class="scene">
-            <img id="visitor-img" class="visitor-img" src="visitor1.png" alt="Посетитель">
-            <img class="speech" src="speech.png" alt="Облако">
-            <div id="speech-text" class="speech-text"></div>
+            <div class="scene-anchor">
+                <img id="visitor-img" class="visitor-img" src="visitor1.png" alt="Посетитель">
+                <img class="speech" src="speech.png" alt="Облако">
+                <div id="speech-text" class="speech-text"></div>
+            </div>
         </div>
 
         <!-- Выбор -->
@@ -137,80 +211,81 @@
     <div id="toast" class="toast"></div>
 
     <script>
-    const visitors = [
-        {img:'visitor1.png'},
-        {img:'visitor2.png'},
-        {img:'visitor3.png'},
-        {img:'visitor4.png'}
-    ];
-    const requests=[
-        {text:'У меня много мелочи, хочу поменять на крупные купюры',answer:'мелкие'},
-        {text:'Мне нужно разменять эту тысячную купюру',answer:'крупные'},
-        {text:'Хочу обменять доллары на рубли',answer:'валюта'},
-        {text:'Нужно отправить деньги родственникам в другой город',answer:'перевод'},
-        {text:'У меня куча монет, поменяйте на банкноты',answer:'мелкие'},
-        {text:'Разбейте мне эту пятитысячную, пожалуйста',answer:'крупные'},
-        {text:'Мне нужны евро вместо рублей',answer:'валюта'},
-        {text:'Переведите деньги на карту жены',answer:'перевод'}
-    ];
-    const answers=[
-        {label:'Разменять мелкие деньги',value:'мелкие'},
-        {label:'Разменять крупные деньги',value:'крупные'},
-        {label:'Сделать обмен валюты',value:'валюта'},
-        {label:'Отправить перевод',value:'перевод'}
-    ];
-    let score=0,visitorCount=0,currentRequest='';
+        const visitors = [
+            { img: 'visitor1.png' },
+            { img: 'visitor2.png' },
+            { img: 'visitor3.png' },
+            { img: 'visitor4.png' }
+        ];
+        const requests = [
+            { text: 'У меня много мелочи, хочу поменять на крупные купюры', answer: 'мелкие' },
+            { text: 'Мне нужно разменять эту тысячную купюру', answer: 'крупные' },
+            { text: 'Хочу обменять доллары на рубли', answer: 'валюта' },
+            { text: 'Нужно отправить деньги родственникам в другой город', answer: 'перевод' },
+            { text: 'У меня куча монет, поменяйте на банкноты', answer: 'мелкие' },
+            { text: 'Разбейте мне эту пятитысячную, пожалуйста', answer: 'крупные' },
+            { text: 'Мне нужны евро вместо рублей', answer: 'валюта' },
+            { text: 'Переведите деньги на карту жены', answer: 'перевод' }
+        ];
+        const answers = [
+            { label: 'Разменять мелкие деньги', value: 'мелкие' },
+            { label: 'Разменять крупные деньги', value: 'крупные' },
+            { label: 'Сделать обмен валюты', value: 'валюта' },
+            { label: 'Отправить перевод', value: 'перевод' }
+        ];
+        let score = 0, visitorCount = 0, currentRequest = '';
 
-    const speechEl=document.getElementById('speech-text');
-    const visitorImg=document.getElementById('visitor-img');
-    const btnContainer=document.getElementById('answer-buttons');
-    const toast=document.getElementById('toast');
+        const speechEl = document.getElementById('speech-text');
+        const visitorImg = document.getElementById('visitor-img');
+        const btnContainer = document.getElementById('answer-buttons');
+        const toast = document.getElementById('toast');
 
-    function init(){
-        // Создать кнопки
-        answers.forEach(a=>{
-            const btn=document.createElement('button');
-            btn.textContent=a.label;
-            btn.onclick=()=>select(a.value);
-            btnContainer.appendChild(btn);
-        });
-        nextVisitor();
-    }
+        function init() {
+            // Создать кнопки
+            answers.forEach(a => {
+                const btn = document.createElement('button');
+                btn.textContent = a.label;
+                btn.onclick = () => select(a.value);
+                btnContainer.appendChild(btn);
+            });
+            nextVisitor();
+        }
 
-    function nextVisitor(){
-        if(score>=10){toastMsg('🎉 Победа!');disableButtons();return;}
-        if(score<=-5){toastMsg('😞 Поражение');disableButtons();return;}
-        visitorCount++;
-        // Обновить счёт
-        document.getElementById('score').textContent=score;
-        document.getElementById('visitor-count').textContent=visitorCount;
-        // Новый запрос и персонаж
-        const req=requests[Math.floor(Math.random()*requests.length)];
-        currentRequest=req.answer;
-        speechEl.textContent=req.text;
-        const vis=visitors[Math.floor(Math.random()*visitors.length)];
-        visitorImg.src=vis.img;
-    }
+        function nextVisitor() {
+            if (score >= 10) { toastMsg('🎉 Победа!'); disableButtons(); return; }
+            if (score <= -5) { toastMsg('😞 Поражение'); disableButtons(); return; }
+            visitorCount++;
+            // Обновить счёт
+            document.getElementById('score').textContent = score;
+            document.getElementById('visitor-count').textContent = visitorCount;
+            // Новый запрос и персонаж
+            const req = requests[Math.floor(Math.random() * requests.length)];
+            currentRequest = req.answer;
+            speechEl.textContent = req.text;
+            const vis = visitors[Math.floor(Math.random() * visitors.length)];
+            visitorImg.src = vis.img;
+        }
 
-    function select(value){
-        if(value===currentRequest){score++;toastMsg('✅ Верно +1');}
-        else{score--;toastMsg('❌ Ошибка -1');}
-        // обновить счёт visual
-        document.getElementById('score').textContent=score;
-        setTimeout(nextVisitor,2000); // ждать пока тост исчезнет
-    }
+        function select(value) {
+            if (value === currentRequest) { score++; toastMsg('✅ Верно +1'); }
+            else { score--; toastMsg('❌ Ошибка -1'); }
+            // обновить счёт visual
+            document.getElementById('score').textContent = score;
+            setTimeout(nextVisitor, 2000); // ждать пока тост исчезнет
+        }
 
-    function toastMsg(msg){
-        toast.textContent=msg;
-        toast.style.display='block';
-        setTimeout(()=>{toast.style.display='none';},2000);
-    }
+        function toastMsg(msg) {
+            toast.textContent = msg;
+            toast.style.display = 'block';
+            setTimeout(() => { toast.style.display = 'none'; }, 2000);
+        }
 
-    function disableButtons(){
-        [...btnContainer.querySelectorAll('button')].forEach(b=>b.disabled=true);
-    }
+        function disableButtons() {
+            [...btnContainer.querySelectorAll('button')].forEach(b => b.disabled = true);
+        }
 
-    window.addEventListener('load',init);
+        window.addEventListener('load', init);
     </script>
 </body>
+
 </html>
