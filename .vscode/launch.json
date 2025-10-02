@@ -8,7 +8,7 @@
             "type": "chrome",
             "request": "launch",
             "name": "Open bank-game.html",
-            "file": "/Users/headmast/Documents/Цифровая трансформация/Game/public-game/bank-game.html"
+            "file": "/Users/headmast/Documents/Цифровая трансформация/Game/public-game/index.html"
         }
     ]
 }

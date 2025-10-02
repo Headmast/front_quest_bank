@@ -43,7 +43,7 @@ window.addEventListener('load', () => {
 function showMainMenu() {
     document.getElementById('level-screen').classList.remove('hidden');
     document.getElementById('game-header').classList.add('hidden');
-    audioManager.playMusic('mainMenu');
+    //audioManager.playMusic('mainMenu');
     initLevelSelect();
 }
 

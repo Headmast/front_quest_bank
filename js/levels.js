@@ -57,6 +57,7 @@ function initLevelSelect() {
             titleEl.textContent = lvl.title;
             descEl.textContent = lvl.desc;
             playBtn.disabled = false;
+            audioManager.playMusic('mainMenu');
         };
         levelGrid.appendChild(btn);
     });

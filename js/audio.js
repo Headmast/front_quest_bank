@@ -37,6 +37,10 @@ class AudioManager {
         if (!this.soundEnabled) return;
         
         // Останавливаем текущую музыку
+        if (this.currentMusic == this.music[trackName]) {
+            return
+        }
+
         if (this.currentMusic) {
             this.currentMusic.pause();
             this.currentMusic.currentTime = 0;
