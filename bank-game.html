@@ -12,6 +12,7 @@
         body {
             margin: 0;
             font-family: "Segoe UI", Roboto, Arial, sans-serif;
+            position: relative;
 
             /* два слоя: 1) изображение (сверху), 2) заливка цветом (снизу) */
             background-image: url('bank-bg.png'), linear-gradient(#F5F5DC, #F5F5DC);
@@ -51,19 +52,25 @@
 
         /* Основная игровая зона */
         .game-wrapper {
-            flex: 1;
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
             display: flex;
             flex-direction: column;
             justify-content: flex-start;
             align-items: center;
             padding: 0 15px;
+            margin-top: 0;
+            z-index: 10;
         }
 
         /* Сцена с персонажем и облаком */
         .scene {
             width: 100%;
             max-width: 560px;
-            margin-top: 3vh;
+            margin-top: 0;
         }
 
         .scene-anchor {
@@ -130,7 +137,7 @@
             display: flex;
             flex-direction: column;
             gap: 12px;
-            margin: 4vh 15px 5vh 15px;
+            margin: 10px 15px 5vh 15px;
             /* отступы на маленьких экранах */
         }
 
@@ -172,9 +179,9 @@
             font-weight: 700;
             color: #000;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
-            display: none;
+            display: none; /* hidden by default */
             z-index: 9999;
-            display: flex;
+            /* will be set to flex via JS when shown */
             align-items: center;
             gap: 8px;
         }
@@ -206,7 +213,7 @@
             }
 
             .choices {
-                margin: 3vh 12px 4vh 12px;
+                margin: 10px 12px 4vh 12px;
                 /* сохраняем отступы */
             }
 
@@ -221,7 +228,7 @@
                 display: grid;
                 grid-template-columns: 1fr 1fr;
                 gap: 16px;
-                margin: 4vh 0 5vh 0;
+                margin: 10px 0 5vh 0;
             }
 
             .speech-text {
@@ -252,6 +259,119 @@
                 padding: 20px 24px;
             }
         }
+
+        /* Экран выбора уровней */
+        .hidden { display: none; }
+        
+        /* По умолчанию скрываем оба экрана */
+        .level-screen, .game-wrapper { display: none; }
+
+        .level-screen {
+            width: 100%;
+            max-width: 900px;
+            margin: 20px auto 0 auto;
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .level-grid {
+            width: 100%;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            max-width: 720px;
+        }
+
+        .level-btn {
+            position: relative;
+            border: none;
+            border-radius: 12px;
+            overflow: hidden;
+            aspect-ratio: 16 / 9;
+            background: #eee;
+            cursor: pointer;
+            padding: 0;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.12);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .level-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 12px rgba(0,0,0,0.18); }
+        .level-btn.selected { outline: 3px solid #D4AF37; }
+        .level-thumb { width: 100%; height: 100%; object-fit: cover; display: block; }
+        .level-title-overlay {
+            position: absolute;
+            left: 0; right: 0; bottom: 0;
+            padding: 8px 10px;
+            background: linear-gradient(transparent, rgba(0,0,0,0.55));
+            color: #fff;
+            font-weight: 700;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.6);
+        }
+
+        .level-info {
+            width: 100%;
+            max-width: 720px;
+            background: rgba(255,255,255,0.9);
+            border-radius: 12px;
+            padding: 14px 16px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+        }
+
+        .level-info h2 { margin: 0 0 8px 0; font-size: 1.25rem; }
+        .level-info p { margin: 0 0 12px 0; line-height: 1.4; }
+        .play-btn {
+            padding: 12px 18px;
+            border: none;
+            border-radius: 10px;
+            background: #D4AF37;
+            color: #2C1810;
+            font-weight: 700;
+            cursor: pointer;
+            transition: background 0.2s ease, transform 0.1s ease;
+        }
+        .play-btn:hover { background: #B8941F; }
+        .play-btn:active { transform: scale(0.98); }
+        .play-btn:disabled { opacity: 0.5; cursor: default; }
+
+        /* Модальное окно (пауза/результат) */
+        .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.45); display: flex; align-items: center; justify-content: center; z-index: 10000; }
+        .modal-overlay.hidden { display: none; }
+
+        /* Анимация скрытия экрана выбора уровней */
+        .level-screen.fade-out {
+            opacity: 0;
+            transform: translateY(-20px);
+            transition: opacity 0.3s ease, transform 0.3s ease;
+        }
+        .modal-box { width: min(92vw, 520px); background: #fff; border-radius: 14px; padding: 18px; box-shadow: 0 10px 30px rgba(0,0,0,0.35); }
+        .modal-box h2 { margin: 0 0 8px 0; font-size: 1.4rem; }
+        .modal-box p { margin: 0 0 14px 0; line-height: 1.45; }
+        .modal-actions { display: flex; gap: 10px; flex-wrap: wrap; }
+        .btn { padding: 10px 14px; border: none; border-radius: 10px; font-weight: 700; cursor: pointer; }
+        .btn-primary { background: #D4AF37; color: #2C1810; }
+        .btn-primary:hover { background: #B8941F; }
+        .btn-secondary { background: #eee; color: #222; }
+        .btn-secondary:hover { background: #e2e2e2; }
+
+        /* Кнопка открытия меню (слева сверху) */
+        .menu-fab {
+            position: fixed;
+            top: 10px;
+            left: 10px;
+            z-index: 10001;
+            padding: 8px 12px;
+            border-radius: 10px;
+            border: none;
+            background: rgba(255,255,255,0.9);
+            color: #222;
+            font-weight: 700;
+            cursor: pointer;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+        }
+        .menu-fab:hover { background: #fff; }
     </style>
 </head>
 
@@ -267,7 +387,19 @@
         </div>
     </header>
 
-    <div class="game-wrapper">
+    <!-- Экран выбора уровней -->
+    <div id="level-screen" class="level-screen">
+        <div class="level-grid" id="level-grid"></div>
+        <div class="level-info">
+            <h2 id="level-title">Выберите уровень</h2>
+            <p id="level-desc">Нажмите на одну из карточек уровней выше, чтобы увидеть описание.</p>
+            <button id="play-btn" class="play-btn" disabled>Играть</button>
+        </div>
+    </div>
+
+    <!-- Игровой экран -->
+    <div id="game-screen" class="game-wrapper hidden">
+        <button id="open-menu-btn" class="menu-fab hidden" aria-label="Меню">≡</button>
         <!-- Сцена -->
         <div class="scene">
             <div class="scene-anchor">
@@ -286,7 +418,54 @@
         <span id="toast-text"></span>
     </div>
 
+    <!-- Модальные окна: пауза/результат -->
+    <div id="modal" class="modal-overlay hidden">
+        <div class="modal-box">
+            <h2 id="modal-title">Пауза</h2>
+            <p id="modal-text">Игра приостановлена.</p>
+            <div class="modal-actions">
+                <button id="btn-continue" class="btn btn-primary">Продолжить</button>
+                <button id="btn-replay" class="btn btn-secondary">Переиграть</button>
+                <button id="btn-menu" class="btn btn-secondary">В меню</button>
+            </div>
+        </div>
+    </div>
+
     <script>
+        // --- Уровни ---
+        const levels = [
+            {
+                id: 'level1',
+                title: 'Касса: размен и переводы',
+                desc: 'Помогайте посетителям с разменом денег, обменом валюты и переводами.',
+                thumb: 'bank-bg-top.png',
+                type: 'internal' // запускаем текущую игру
+            },
+            {
+                id: 'level2',
+                title: 'Обучение: Twine история',
+                desc: 'Небольшой интерактивный рассказ о банковских услугах.',
+                thumb: 'bank-bg.png',
+                type: 'link',
+                href: 'twine-game.html'
+            },
+            {
+                id: 'level3',
+                title: 'Сложные клиенты',
+                desc: 'Более быстрый темп и запутанные запросы клиентов.',
+                thumb: 'bank-bg-top.png',
+                type: 'internal-hard' // вариант усложнённых настроек
+            },
+            {
+                id: 'level4',
+                title: 'Скорость обслуживания',
+                desc: 'Накопите 10 очков быстрее, чем истечёт время.',
+                thumb: 'bank-bg.png',
+                type: 'internal-timed'
+            }
+        ];
+
+        // --- Ресурсы текущей игры ---
         const visitors = [
             { img: 'visitor1.png' },
             { img: 'visitor2.png' },
@@ -314,6 +493,8 @@
             { label: 'Отправить перевод', value: 'перевод' }
         ];
         let score = 0, visitorCount = 0, currentRequest = '';
+        let selectedLevel = null;
+        let mode = 'normal'; // normal | hard | timed
 
         const speechEl = document.getElementById('speech-text');
         const visitorImg = document.getElementById('visitor-img');
@@ -321,11 +502,84 @@
         const toast = document.getElementById('toast');
         const toastIcon = document.getElementById('toast-icon');
         const toastText = document.getElementById('toast-text');
+        const modal = document.getElementById('modal');
+        const modalTitle = document.getElementById('modal-title');
+        const modalText = document.getElementById('modal-text');
+        const btnContinue = document.getElementById('btn-continue');
+        const btnReplay = document.getElementById('btn-replay');
+        const btnMenu = document.getElementById('btn-menu');
+        const openMenuBtn = document.getElementById('open-menu-btn');
 
-        function init() {
+        function initLevelSelect() {
+            const levelGrid = document.getElementById('level-grid');
+            const titleEl = document.getElementById('level-title');
+            const descEl = document.getElementById('level-desc');
+            const playBtn = document.getElementById('play-btn');
+
+            levels.forEach(lvl => {
+                const btn = document.createElement('button');
+                btn.className = 'level-btn';
+                btn.innerHTML = `
+                    <img class="level-thumb" src="${lvl.thumb}" alt="${lvl.title}">
+                    <div class="level-title-overlay">${lvl.title}</div>
+                `;
+                btn.onclick = () => {
+                    selectedLevel = lvl;
+                    // визуально выделяем
+                    [...levelGrid.children].forEach(c => c.classList.remove('selected'));
+                    btn.classList.add('selected');
+                    // показываем описание
+                    titleEl.textContent = lvl.title;
+                    descEl.textContent = lvl.desc;
+                    playBtn.disabled = false;
+                };
+                levelGrid.appendChild(btn);
+            });
+
+            playBtn.addEventListener('click', () => {
+                if (!selectedLevel) return;
+                
+                // Анимация скрытия экрана выбора уровней
+                const levelScreen = document.getElementById('level-screen');
+                levelScreen.classList.add('fade-out');
+                
+                // Запускаем игру после анимации
+                setTimeout(() => {
+                    if (selectedLevel.type === 'link' && selectedLevel.href) {
+                        window.open(selectedLevel.href, '_blank');
+                        return;
+                    }
+                    // Внутренние режимы — запускаем на той же странице
+                    if (selectedLevel.type === 'internal') {
+                        mode = 'normal';
+                        startGame();
+                        return;
+                    }
+                    if (selectedLevel.type === 'internal-hard') {
+                        mode = 'hard';
+                        startGame();
+                        return;
+                    }
+                    if (selectedLevel.type === 'internal-timed') {
+                        mode = 'timed';
+                        startGame();
+                        return;
+                    }
+                }, 300); // 300ms = время анимации
+            });
+        }
+
+        function startGame() {
+            document.getElementById('game-screen').classList.remove('hidden');
+            openMenuBtn.classList.remove('hidden');
+            initGame();
+        }
+
+        function initGame() {
             toast.style.display = 'none';
             toastText.textContent = '';
-            // Создать кнопки
+            score = 0; visitorCount = 0; currentRequest = '';
+            btnContainer.innerHTML = '';
             answers.forEach(a => {
                 const btn = document.createElement('button');
                 btn.textContent = a.label;
@@ -333,24 +587,21 @@
                 btnContainer.appendChild(btn);
             });
             nextVisitor();
+            if (mode === 'timed') startTimer();
         }
 
         function nextVisitor() {
-            if (score >= 10) {
-                toastMsg('🎉 Победа!', 'coin-icon.png');
-                disableButtons();
-                return;
-            }
-            if (score <= -5) {
-                toastMsg('😞 Поражение', 'coin-icon.png');
-                disableButtons();
-                return;
-            }
+            if (score >= 10) { return endGame(true); }
+            if (score <= -5) { return endGame(false); }
             visitorCount++;
             updateScore();
 
             // Новый запрос и персонаж
-            const req = requests[Math.floor(Math.random() * requests.length)];
+            let req = requests[Math.floor(Math.random() * requests.length)];
+            if (mode === 'hard') {
+                // В «hard» повышаем шанс запутанных формулировок (просто берём ещё раз случай)
+                if (Math.random() < 0.5) req = requests[Math.floor(Math.random() * requests.length)];
+            }
             currentRequest = req.answer;
             speechEl.textContent = req.text;
             const vis = visitors[Math.floor(Math.random() * visitors.length)];
@@ -393,7 +644,125 @@
             [...btnContainer.querySelectorAll('button')].forEach(b => b.disabled = true);
         }
 
-        window.addEventListener('load', init);
+        // Таймер для режима timed
+        let timerId = null, remaining = 60;
+        function startTimer() {
+            remaining = 60;
+            timerId = setInterval(() => {
+                remaining--;
+                if (remaining <= 0) {
+                    clearInterval(timerId);
+                    timerId = null;
+                    endGame(score >= 10);
+                }
+            }, 1000);
+        }
+
+        function pauseTimer() { if (timerId) { clearInterval(timerId); timerId = null; } }
+        function resumeTimer() { if (mode === 'timed' && !timerId) startTimer(); }
+
+        // Пауза/результат
+        let isPaused = false;
+        function showPause() {
+            if (isPaused) return;
+            isPaused = true;
+            disableButtons();
+            pauseTimer();
+            modalTitle.textContent = 'Пауза';
+            modalText.textContent = 'Игра приостановлена.';
+            btnContinue.style.display = '';
+            modal.classList.remove('hidden');
+        }
+
+        function hideModal() {
+            modal.classList.add('hidden');
+        }
+
+        function continueGame() {
+            hideModal();
+            isPaused = false;
+            enableButtons();
+            resumeTimer();
+        }
+
+        function endGame(won) {
+            disableButtons();
+            pauseTimer();
+            modalTitle.textContent = won ? 'Результат: Победа' : 'Результат: Поражение';
+            modalText.textContent = won ? 'Вы набрали 10 очков. Отличная работа!' : 'Вы достигли лимита ошибок. Попробуйте снова!';
+            btnContinue.style.display = 'none';
+            modal.classList.remove('hidden');
+        }
+
+        function enableButtons() {
+            [...btnContainer.querySelectorAll('button')].forEach(b => b.disabled = false);
+        }
+
+        // Кнопки модалки
+        btnContinue.addEventListener('click', continueGame);
+        btnReplay.addEventListener('click', () => {
+            hideModal();
+            isPaused = false;
+            startGame();
+        });
+        btnMenu.addEventListener('click', () => {
+            hideModal();
+            isPaused = false;
+            backToMenu();
+        });
+
+        function backToMenu() {
+            pauseTimer();
+            document.getElementById('game-screen').classList.add('hidden');
+            const levelScreen = document.getElementById('level-screen');
+            levelScreen.classList.remove('fade-out'); // Убираем класс анимации
+            openMenuBtn.classList.add('hidden');
+        }
+
+        // Горячая клавиша 'm' — меню (пауза)
+        window.addEventListener('keydown', (e) => {
+            if (e.key === 'm' || e.key === 'M') {
+                // показываем паузу только если игровой экран активен
+                if (!document.getElementById('game-screen').classList.contains('hidden')) {
+                    showPause();
+                }
+            }
+        });
+
+        openMenuBtn.addEventListener('click', () => {
+            if (!document.getElementById('game-screen').classList.contains('hidden')) {
+                showPause();
+            }
+        });
+
+        window.addEventListener('load', () => {
+            // Сначала скрываем все экраны
+            document.getElementById('level-screen').classList.add('hidden');
+            document.getElementById('game-screen').classList.add('hidden');
+            
+            // Проверяем URL параметры для автозапуска игры
+            const params = new URLSearchParams(window.location.search);
+            const l = params.get('l');
+            if (l) {
+                const map = {
+                    'level1': { type: 'internal', mode: 'normal' },
+                    'level3': { type: 'internal-hard', mode: 'hard' },
+                    'level4': { type: 'internal-timed', mode: 'timed' }
+                };
+                const conf = map[l];
+                if (conf) {
+                    mode = conf.mode;
+                    document.getElementById('game-screen').classList.remove('hidden');
+                    document.getElementById('open-menu-btn').classList.remove('hidden');
+                    initGame();
+                    return; // Не инициализируем level-screen
+                }
+            }
+            
+            // Если нет параметров уровня, показываем экран выбора уровней
+            document.getElementById('level-screen').classList.remove('hidden');
+            initLevelSelect();
+        });
     </script>
 </body>
 
