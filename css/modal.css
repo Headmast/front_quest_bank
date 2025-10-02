@@ -2,7 +2,7 @@
 .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.45); display: flex; align-items: center; justify-content: center; z-index: 10000; }
 .modal-overlay.hidden { display: none; }
 
-.modal-box { width: min(92vw, 520px); background: #fff; border-radius: 14px; padding: 18px; box-shadow: 0 10px 30px rgba(0,0,0,0.35); }
+.modal-box { width: min(92vw, 520px); background:  rgba(0,0,0,0.85); border-radius: 14px; padding: 18px; box-shadow: 0 10px 30px rgba(0,0,0,0.35); }
 .modal-box h2 { margin: 0 0 8px 0; font-size: 1.4rem; color: #56FFFF; }
 .modal-box p { margin: 0 0 14px 0; line-height: 1.45; color: #56FFFF; }
 .modal-actions { display: flex; gap: 10px; flex-wrap: wrap; }

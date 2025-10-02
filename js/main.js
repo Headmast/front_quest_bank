@@ -1,5 +1,8 @@
 // --- Инициализация приложения ---
 window.addEventListener('load', () => {
+    // Инициализируем настройки
+    initSettings();
+    
     // Сначала скрываем все экраны
     document.getElementById('level-screen').classList.add('hidden');
     document.getElementById('game-screen').classList.add('hidden');
@@ -9,8 +12,7 @@ window.addEventListener('load', () => {
     if (DEBUG_AUTO_START && !window.location.search) {
         mode = 'normal';
         applyGameResources('normal');
-        document.getElementById('game-screen').classList.remove('hidden');
-        document.getElementById('open-menu-btn').classList.remove('hidden');
+        showGameScreen();
         initGame();
         return;
     }
@@ -28,14 +30,26 @@ window.addEventListener('load', () => {
         if (conf) {
             mode = conf.mode;
             applyGameResources(conf.mode);
-            document.getElementById('game-screen').classList.remove('hidden');
-            document.getElementById('open-menu-btn').classList.remove('hidden');
+            showGameScreen();
             initGame();
             return; // Не инициализируем level-screen
         }
     }
     
     // Если нет параметров уровня, показываем экран выбора уровней
-    document.getElementById('level-screen').classList.remove('hidden');
-    initLevelSelect();
+    showMainMenu();
 });
+
+function showMainMenu() {
+    document.getElementById('level-screen').classList.remove('hidden');
+    document.getElementById('game-header').classList.add('hidden');
+    audioManager.playMusic('mainMenu');
+    initLevelSelect();
+}
+
+function showGameScreen() {
+    document.getElementById('game-screen').classList.remove('hidden');
+    document.getElementById('game-header').classList.remove('hidden');
+    document.getElementById('open-menu-btn').classList.remove('hidden');
+    audioManager.playMusic('level');
+}

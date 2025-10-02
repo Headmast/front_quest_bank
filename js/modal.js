@@ -7,17 +7,41 @@ const btnReplay = document.getElementById('btn-replay');
 const btnMenu = document.getElementById('btn-menu');
 
 // Таймер для режима timed
-let timerId = null, remaining = 60;
+let timerId = null, remaining = 30;
 function startTimer() {
-    remaining = 60;
+    remaining = 30;
+    updateTimerDisplay();
+    showTimer();
     timerId = setInterval(() => {
         remaining--;
+        updateTimerDisplay();
         if (remaining <= 0) {
             clearInterval(timerId);
             timerId = null;
-            endGame(score >= 10);
+            endTimedGame();
         }
     }, 1000);
+}
+
+function updateTimerDisplay() {
+    const timerEl = document.getElementById('timer');
+    if (timerEl) {
+        timerEl.textContent = remaining;
+    }
+}
+
+function showTimer() {
+    const timerItem = document.getElementById('timer-item');
+    if (timerItem) {
+        timerItem.classList.remove('hidden');
+    }
+}
+
+function hideTimer() {
+    const timerItem = document.getElementById('timer-item');
+    if (timerItem) {
+        timerItem.classList.add('hidden');
+    }
 }
 
 function pauseTimer() { if (timerId) { clearInterval(timerId); timerId = null; } }
@@ -50,8 +74,19 @@ function continueGame() {
 function endGame(won) {
     disableButtons();
     pauseTimer();
+    hideTimer();
     modalTitle.textContent = won ? 'Результат: Победа' : 'Результат: Поражение';
     modalText.textContent = won ? 'Вы набрали 10 очков. Отличная работа!' : 'Вы достигли лимита ошибок. Попробуйте снова!';
+    btnContinue.style.display = 'none';
+    modal.classList.remove('hidden');
+}
+
+function endTimedGame() {
+    disableButtons();
+    pauseTimer();
+    hideTimer();
+    modalTitle.textContent = 'Время истекло!';
+    modalText.textContent = `Ваш результат: ${score} ${score === 1 ? 'балл' : score < 5 ? 'балла' : 'баллов'} за 30 секунд.`;
     btnContinue.style.display = 'none';
     modal.classList.remove('hidden');
 }
@@ -71,11 +106,12 @@ btnMenu.addEventListener('click', () => {
 
 function backToMenu() {
     pauseTimer();
+    hideTimer();
     document.getElementById('game-screen').classList.add('hidden');
     const levelScreen = document.getElementById('level-screen');
     levelScreen.classList.remove('fade-out'); // Убираем класс анимации
     openMenuBtn.classList.add('hidden');
-    levelScreen.classList.remove('hidden');
+    showMainMenu();
 }
 
 // Горячая клавиша 'm' — меню (пауза)

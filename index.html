@@ -11,20 +11,28 @@
     <link rel="stylesheet" href="css/buttons.css">
     <link rel="stylesheet" href="css/levels.css">
     <link rel="stylesheet" href="css/modal.css">
+    <link rel="stylesheet" href="css/settings.css">
 </head>
 
 <body>
-    <header>
+    <header id="game-header" class="hidden">
         <div class="score-item">
             <!-- <img src="assets/images/ui/coin-icon.png" class="score-icon" alt="Счёт"> -->
             <span id="score-label">Баллы</span>
             <span id="score">0</span>
+        </div>
+        <div id="timer-item" class="score-item hidden">
+            <span id="timer-label">Время</span>
+            <span id="timer">30</span>
         </div>
         <!-- <div class="score-item">
             <img src="assets/images/ui/visitor-icon.png" class="score-icon" alt="Посетители">
             <span id="visitor-count">0</span>
         </div> -->
     </header>
+
+    <!-- Кнопка настроек звука -->
+    <button id="settings-btn" class="settings-btn" aria-label="Настройки">⚙</button>
 
     <!-- Экран выбора уровней -->
     <div id="level-screen" class="level-screen">
@@ -70,7 +78,42 @@
         </div>
     </div>
 
+    <!-- Модальное окно настроек -->
+    <div id="settings-modal" class="settings-modal hidden">
+        <div class="settings-box">
+            <h2>Настройки звука</h2>
+            
+            <div class="setting-item">
+                <label class="setting-label">Звук включен</label>
+                <label class="toggle-switch">
+                    <input type="checkbox" id="sound-toggle">
+                    <span class="slider"></span>
+                </label>
+            </div>
+            
+            <div class="setting-item">
+                <label class="setting-label">
+                    Громкость музыки 
+                    <span id="music-volume-value" class="volume-value">10%</span>
+                </label>
+                <input type="range" id="music-volume" class="volume-slider" min="0" max="1" step="0.01" value="0.1">
+            </div>
+            
+            <div class="setting-item">
+                <label class="setting-label">
+                    Громкость звуков 
+                    <span id="sound-volume-value" class="volume-value">10%</span>
+                </label>
+                <input type="range" id="sound-volume" class="volume-slider" min="0" max="1" step="0.01" value="0.1">
+            </div>
+            
+            <button id="settings-close" class="settings-close">Закрыть</button>
+        </div>
+    </div>
+
     <!-- Подключение JavaScript модулей -->
+    <script src="js/audio.js"></script>
+    <script src="js/settings.js"></script>
     <script src="js/resources.js"></script>
     <script src="js/levels.js"></script>
     <script src="js/game.js"></script>

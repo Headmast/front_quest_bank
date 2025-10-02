@@ -34,9 +34,7 @@ const toastText = document.getElementById('toast-text');
 const openMenuBtn = document.getElementById('open-menu-btn');
 
 function startGame() {
-    const game = document.getElementById('game-screen');
-    game.classList.remove('hidden');
-    openMenuBtn.classList.remove('hidden');
+    showGameScreen();
     initGame();
 }
 
@@ -44,6 +42,10 @@ function initGame() {
     toast.style.display = 'none';
     toastText.textContent = '';
     score = 0; visitorCount = 0; currentRequest = '';
+    
+    // Скрываем таймер в начале каждой игры
+    hideTimer();
+    
     btnContainer.innerHTML = '';
     answers.forEach(a => {
         const btn = document.createElement('button');
@@ -56,8 +58,11 @@ function initGame() {
 }
 
 function nextVisitor() {
-    if (score >= 10) { return endGame(true); }
-    if (score <= -5) { return endGame(false); }
+    // В режиме "на время" не останавливаем игру по очкам
+    if (mode !== 'timed') {
+        if (score >= 10) { return endGame(true); }
+        if (score <= -5) { return endGame(false); }
+    }
     visitorCount++;
     updateScore();
 
@@ -71,6 +76,9 @@ function nextVisitor() {
     speechEl.textContent = req.text;
     const vis = visitors[Math.floor(Math.random() * visitors.length)];
     visitorImg.src = vis.img;
+    
+    // Проигрываем звук шагов клиента
+    audioManager.playSound('clientSteps');
 }
 
 function select(value) {
@@ -83,12 +91,14 @@ function select(value) {
     nextVisitor(); // это обновит персонажа, вопрос и проверит победу/поражение
 
     // Если наступила победа/поражение, nextVisitor сам покажет тост и отключит кнопки,
-    // в этом случае второй тост не нужен:
-    if (score >= 10 || score <= -5) return;
+    // в этом случае второй тост не нужен (но не в режиме timed):
+    if (mode !== 'timed' && (score >= 10 || score <= -5)) return;
 
     // 3) через короткую задержку показать тост по предыдущему ответу
     setTimeout(() => {
         toastMsg(wasCorrect ? '✅ Верно +1' : '❌ Ошибка -1', 'assets/images/ui/coin-icon.png');
+        // Проигрываем звук результата
+        audioManager.playSound(wasCorrect ? 'correctAnswer' : 'wrongAnswer');
     }, 150); // 100–200 мс достаточно, чтобы экран уже сменился
 }
 
