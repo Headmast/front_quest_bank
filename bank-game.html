@@ -5,6 +5,15 @@
     <title>Банковский квест</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
+        /* Подключение шрифтов */
+        @font-face {
+            font-family: 'Gazprombank Sans DemiBold';
+            src: url('Fonts/Gazprombank Sans DemiBold.ttf') format('truetype');
+            font-weight: 600;
+            font-style: normal;
+            font-display: swap;
+        }
+
         * {
             box-sizing: border-box;
         }
@@ -23,7 +32,7 @@
             min-height: 100vh;
             display: flex;
             flex-direction: column;
-            color: #212121;
+            color: #56FFFF;
         }
 
         /* Верхняя панель со счётом и иконками */
@@ -31,7 +40,7 @@
             padding: 8px 12px;
             font-size: 0.9rem;
             text-align: right;
-            background: rgba(255, 255, 255, 0.85);
+            background: rgba(0, 0, 0, 0.65);
             display: flex;
             justify-content: flex-end;
             align-items: center;
@@ -129,7 +138,7 @@
             line-height: 1.35;
             font-size: clamp(14px, 2.2vw, 19px);
             font-weight: 700;
-            color: #111;
+            color: #56FFFF;
             z-index: 3;
         }
 
@@ -146,23 +155,24 @@
 
         .choices button {
             padding: 16px 20px;
-            border: none;
+            border: 3px solid #56FFFF;
             border-radius: 10px;
             font-size: 1rem;
+            font-family: 'Halvar Breitschrift-Medium-Web', "Segoe UI", Roboto, Arial, sans-serif;
+            /* font-family: 'Gazprombank Sans DemiBold', "Segoe UI", Roboto, Arial, sans-serif; */
             font-weight: 600;
-            background: #D4AF37;
-            /* золотистый цвет банка */
-            color: #2C1810;
-            /* тёмно-коричневый текст */
+            background: #000000;
+            color: #56FFFF;
             cursor: pointer;
             transition: all 0.3s ease;
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
 
         .choices button:hover {
-            background: #B8941F;
+            background: #56FFFF;
+            color: #000000;
             transform: translateY(-1px);
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+            box-shadow: 0 4px 8px rgba(86, 255, 255, 0.3);
         }
 
         .choices button:active {
@@ -324,25 +334,26 @@
         .level-info {
             width: 100%;
             max-width: 720px;
-            background: rgba(255,255,255,0.9);
+            background: rgba(0,0,0,0.65);
             border-radius: 12px;
             padding: 14px 16px;
             box-shadow: 0 2px 8px rgba(0,0,0,0.12);
         }
 
-        .level-info h2 { margin: 0 0 8px 0; font-size: 1.25rem; }
-        .level-info p { margin: 0 0 12px 0; line-height: 1.4; }
+        .level-info h2 { margin: 0 0 8px 0; font-size: 1.25rem; color: #56FFFF; }
+        .level-info p { margin: 0 0 12px 0; line-height: 1.4; color: #56FFFF; }
         .play-btn {
             padding: 12px 18px;
-            border: none;
+            border: 3px solid #56FFFF;
             border-radius: 10px;
-            background: #D4AF37;
-            color: #2C1810;
+            background: #000000;
+            color: #56FFFF;
+            font-family: 'Gazprombank Sans DemiBold', "Segoe UI", Roboto, Arial, sans-serif;
             font-weight: 700;
             cursor: pointer;
             transition: background 0.2s ease, transform 0.1s ease;
         }
-        .play-btn:hover { background: #B8941F; }
+        .play-btn:hover { background: #56FFFF; color: #000000; }
         .play-btn:active { transform: scale(0.98); }
         .play-btn:disabled { opacity: 0.5; cursor: default; }
 
@@ -357,14 +368,14 @@
             transition: opacity 0.3s ease, transform 0.3s ease;
         }
         .modal-box { width: min(92vw, 520px); background: #fff; border-radius: 14px; padding: 18px; box-shadow: 0 10px 30px rgba(0,0,0,0.35); }
-        .modal-box h2 { margin: 0 0 8px 0; font-size: 1.4rem; }
-        .modal-box p { margin: 0 0 14px 0; line-height: 1.45; }
+        .modal-box h2 { margin: 0 0 8px 0; font-size: 1.4rem; color: #56FFFF; }
+        .modal-box p { margin: 0 0 14px 0; line-height: 1.45; color: #56FFFF; }
         .modal-actions { display: flex; gap: 10px; flex-wrap: wrap; }
-        .btn { padding: 10px 14px; border: none; border-radius: 10px; font-weight: 700; cursor: pointer; }
-        .btn-primary { background: #D4AF37; color: #2C1810; }
-        .btn-primary:hover { background: #B8941F; }
-        .btn-secondary { background: #eee; color: #222; }
-        .btn-secondary:hover { background: #e2e2e2; }
+        .btn { padding: 10px 14px; border: 3px solid #56FFFF; border-radius: 10px; font-family: 'Gazprombank Sans DemiBold', "Segoe UI", Roboto, Arial, sans-serif; font-weight: 700; cursor: pointer; }
+        .btn-primary { background: #000000; color: #56FFFF; }
+        .btn-primary:hover { background: #56FFFF; color: #000000; }
+        .btn-secondary { background: #000000; color: #56FFFF; }
+        .btn-secondary:hover { background: #56FFFF; color: #000000; }
 
         /* Кнопка открытия меню (слева сверху) */
         .menu-fab {
@@ -374,27 +385,29 @@
             z-index: 10001;
             padding: 8px 12px;
             border-radius: 10px;
-            border: none;
-            background: rgba(255,255,255,0.9);
-            color: #222;
+            border: 3px solid #56FFFF;
+            background: #000000;
+            color: #56FFFF;
+            font-family: 'Gazprombank Sans DemiBold', "Segoe UI", Roboto, Arial, sans-serif;
             font-weight: 700;
             cursor: pointer;
             box-shadow: 0 2px 6px rgba(0,0,0,0.15);
         }
-        .menu-fab:hover { background: #fff; }
+        .menu-fab:hover { background: #56FFFF; color: #000000; }
     </style>
 </head>
 
 <body>
     <header>
         <div class="score-item">
-            <img src="coin-icon.png" class="score-icon" alt="Счёт">
+            <!-- <img src="coin-icon.png" class="score-icon" alt="Счёт"> -->
+            <id="score-label">Баллы</>
             <span id="score">0</span>
         </div>
-        <div class="score-item">
+        <!-- <div class="score-item">
             <img src="visitor-icon.png" class="score-icon" alt="Посетители">
             <span id="visitor-count">0</span>
-        </div>
+        </div> -->
     </header>
 
     <!-- Экран выбора уровней -->
@@ -446,42 +459,111 @@
         const levels = [
             {
                 id: 'level1',
-                title: 'Касса: размен и переводы',
-                desc: 'Помогайте посетителям с разменом денег, обменом валюты и переводами.',
-                thumb: 'bank-bg-top.png',
+                title: 'Наши дни',
+                desc: 'Самые современные банковские услуги..',
+                thumb: 'level1.jpg',
                 type: 'internal' // запускаем текущую игру
             },
             {
                 id: 'level2',
-                title: 'Обучение: Twine история',
+                title: 'Пример интеграции внешних продуктов',
                 desc: 'Небольшой интерактивный рассказ о банковских услугах.',
-                thumb: 'bank-bg.png',
+                thumb: 'level3.png',
                 type: 'link',
                 href: 'twine-game.html'
             },
             {
                 id: 'level3',
-                title: 'Сложные клиенты',
-                desc: 'Более быстрый темп и запутанные запросы клиентов.',
-                thumb: 'bank-bg-top.png',
+                title: 'Доисторическая эпоха',
+                desc: 'Первобытный банкинг и первые банкиры.',
+                thumb: 'level2.jpg',
                 type: 'internal-hard' // вариант усложнённых настроек
             },
             {
                 id: 'level4',
-                title: 'Скорость обслуживания',
+                title: 'Чемпионат на скорость',
                 desc: 'Накопите 10 очков быстрее, чем истечёт время.',
-                thumb: 'bank-bg.png',
+                thumb: 'level4.jpg',
                 type: 'internal-timed'
             }
         ];
 
-        // --- Ресурсы текущей игры ---
-        const visitors = [
-            { img: 'visitor1.png' },
-            { img: 'visitor2.png' },
-            { img: 'visitor3.png' },
-            { img: 'visitor4.png' }
-        ];
+        // --- Управление ресурсами ---
+        function getGameResources(gameMode) {
+            const resources = {
+                normal: {
+                    visitors: [
+                        { img: 'visitor1.png' },
+                        { img: 'visitor2.png' },
+                        { img: 'visitor3.png' },
+                        { img: 'visitor4.png' }
+                    ],
+                    background: 'bank-bg.png',
+                    speech: 'speech.png'
+                },
+                hard: {
+                    visitors: [
+                        { img: 'ovisitor1.png' },
+                        { img: 'ovisitor2.png' },
+                        { img: 'ovisitor3.png' },
+                        { img: 'ovisitor4.png' }
+                    ],
+                    background: 'obank-bg.png',
+                    speech: 'ospeech.png'
+                },
+                timed: {
+                    visitors: [
+                        { img: 'visitor1.png' },
+                        { img: 'visitor2.png' },
+                        { img: 'visitor3.png' },
+                        { img: 'visitor4.png' }
+                    ],
+                    background: 'bank-bg.png',
+                    speech: 'speech.png'
+                }
+            };
+            
+            return resources[gameMode] || resources.normal;
+        }
+
+        // --- Текущие ресурсы игры ---
+        let currentResources = getGameResources('normal');
+        let visitors = currentResources.visitors;
+
+        // Функция применения ресурсов к интерфейсу
+        function applyGameResources(gameMode) {
+            currentResources = getGameResources(gameMode);
+            visitors = currentResources.visitors;
+            
+            // Обновляем фон body
+            document.body.style.backgroundImage = `url('${currentResources.background}'), linear-gradient(#F5F5DC, #F5F5DC)`;
+            
+            // Обновляем изображение речевого пузыря
+            const speechImg = document.querySelector('.speech');
+            if (speechImg) {
+                speechImg.src = currentResources.speech;
+            }
+            
+            // Если игра уже запущена, обновляем текущего персонажа
+            const visitorImg = document.getElementById('visitor-img');
+            if (visitorImg && !visitorImg.src.includes('visitor1.png')) {
+                // Сохраняем текущий индекс персонажа и обновляем на соответствующий из новых ресурсов
+                const currentIndex = getCurrentVisitorIndex(visitorImg.src);
+                if (currentIndex >= 0 && currentIndex < visitors.length) {
+                    visitorImg.src = visitors[currentIndex].img;
+                }
+            }
+        }
+
+        // Вспомогательная функция для определения текущего индекса персонажа
+        function getCurrentVisitorIndex(currentSrc) {
+            const filename = currentSrc.split('/').pop();
+            if (filename.includes('visitor1') || filename.includes('ovisitor1')) return 0;
+            if (filename.includes('visitor2') || filename.includes('ovisitor2')) return 1;
+            if (filename.includes('visitor3') || filename.includes('ovisitor3')) return 2;
+            if (filename.includes('visitor4') || filename.includes('ovisitor4')) return 3;
+            return 0; // по умолчанию первый
+        }
         const requests = [
             { text: 'У меня много мелочи, хочу поменять на крупные купюры', answer: 'мелкие' },
             { text: 'Мне нужно разменять эту тысячную купюру', answer: 'крупные' },
@@ -562,16 +644,19 @@
                     // Внутренние режимы — запускаем на той же странице
                     if (selectedLevel.type === 'internal') {
                         mode = 'normal';
+                        applyGameResources('normal');
                         startGame();
                         return;
                     }
                     if (selectedLevel.type === 'internal-hard') {
                         mode = 'hard';
+                        applyGameResources('hard');
                         startGame();
                         return;
                     }
                     if (selectedLevel.type === 'internal-timed') {
                         mode = 'timed';
+                        applyGameResources('normal');
                         startGame();
                         return;
                     }
@@ -647,7 +732,7 @@
 
         function updateScore() {
             document.getElementById('score').textContent = score;
-            document.getElementById('visitor-count').textContent = visitorCount;
+            // document.getElementById('visitor-count').textContent = visitorCount;
         }
 
         function disableButtons() {
@@ -751,9 +836,10 @@
             document.getElementById('game-screen').classList.add('hidden');
             
             // БЫСТРАЯ ОТЛАДКА: автозапуск первой игры (закомментируйте для обычной работы)
-            const DEBUG_AUTO_START = true;
+            const DEBUG_AUTO_START = false;
             if (DEBUG_AUTO_START && !window.location.search) {
                 mode = 'normal';
+                applyGameResources('normal');
                 document.getElementById('game-screen').classList.remove('hidden');
                 document.getElementById('open-menu-btn').classList.remove('hidden');
                 initGame();
@@ -772,6 +858,7 @@
                 const conf = map[l];
                 if (conf) {
                     mode = conf.mode;
+                    applyGameResources(conf.mode);
                     document.getElementById('game-screen').classList.remove('hidden');
                     document.getElementById('open-menu-btn').classList.remove('hidden');
                     initGame();
