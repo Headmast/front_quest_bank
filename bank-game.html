@@ -4,501 +4,213 @@
     <title>Банковский квест</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
-        * {
-            box-sizing: border-box;
-        }
-        
+        * { box-sizing: border-box; }
         body {
-            font-family: Arial, sans-serif;
             margin: 0;
-            padding: 15px;
-            background-color: #f5f5f5;
+            font-family: "Segoe UI", Roboto, Arial, sans-serif;
+            background: url('bank-bg.png') center/cover no-repeat fixed;
             min-height: 100vh;
-            font-size: 16px;
-            line-height: 1.4;
-        }
-        
-        .game-container {
-            background: white;
-            padding: 20px;
-            border-radius: 12px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-            max-width: 100%;
-            margin: 0 auto;
-        }
-        
-        h1 {
-            text-align: center;
-            color: #263238;
-            margin: 0 0 20px 0;
-            font-size: 1.8em;
-        }
-        
-        .score {
-            text-align: center;
-            font-size: 1.1em;
-            font-weight: bold;
-            margin-bottom: 20px;
-            padding: 15px;
-            background: #263238;
-            color: white;
-            border-radius: 8px;
-        }
-        
-        .visitor-request {
-            background: #37474F;
-            color: white;
-            padding: 20px;
-            border-radius: 8px;
-            margin: 20px 0;
-            border-left: 5px solid #ff9800;
-            font-size: 1.1em;
-        }
-        
-        .buttons {
             display: flex;
             flex-direction: column;
-            gap: 12px;
-            margin: 25px 0;
+            color: #212121;
+        }
+
+        /* Верхняя панель со счётом */
+        header {
+            padding: 6px 10px;
+            font-size: 0.85rem;
+            text-align: right;
+            background: rgba(255,255,255,0.7);
         }
         
-        button {
-            padding: 18px 20px;
-            font-size: 1.1em;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            background: #1976D2;
-            color: white;
-            transition: background 0.3s;
-            font-weight: 600;
-            min-height: 60px;
+        /* Основная игровая зона разбита горизонтально */
+        .game-wrapper {
+            flex: 1;
             display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
             align-items: center;
-            justify-content: center;
-            text-align: center;
         }
-        
-        button:hover {
-            background: #0D47A1;
+
+        /* Верх: персонаж + облако реплики */
+        .scene {
+            position: relative;
+            width: 100%;
+            max-width: 500px;
+            margin-top: 5vh;
         }
-        
-        button:active {
-            transform: scale(0.98);
+        .visitor-img {
+            width: 40%;
+            max-width: 220px;
         }
-        
-        .result {
-            text-align: center;
-            font-size: 1.2em;
-            font-weight: bold;
-            padding: 20px;
-            margin: 20px 0;
+        .speech {
+            position: absolute;
+            top: -10px;
+            right: -10px;
+            width: 80%;
+            max-width: 340px;
+            pointer-events: none;
+        }
+        .speech-text {
+            position: absolute;
+            top: 20%;
+            left: 10%;
+            width: 80%;
+            font-size: 1rem;
+            font-weight: 600;
+            line-height: 1.3;
+            color: #000;
+        }
+
+        /* Нижняя зона с вариантами ответов */
+        .choices {
+            width: 100%;
+            max-width: 500px;
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+            margin: 5vh 0;
+        }
+        .choices button {
+            padding: 16px 14px;
+            border: none;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: 600;
+            background: #1976d2;
+            color: #fff;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        .choices button:hover { background: #0d47a1; }
+        .choices button:active { transform: scale(0.97); }
+
+        /* Всплывающий индикатор правильности */
+        .toast {
+            position: fixed;
+            top: 10vh;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(255,255,255,0.9);
+            padding: 14px 20px;
             border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 700;
+            color: #000;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+            display: none;
+            z-index: 9999;
         }
-        
-        .correct {
-            background: #c8e6c9;
-            color: #2e7d32;
-        }
-        
-        .incorrect {
-            background: #ffcdd2;
-            color: #c62828;
-        }
-        
-        .game-over {
-            text-align: center;
-            font-size: 1.3em;
-            font-weight: bold;
-            padding: 25px;
-            border-radius: 8px;
-            margin: 20px 0;
-        }
-        
-        .victory {
-            background: #c8e6c9;
-            color: #2e7d32;
-        }
-        
-        .defeat {
-            background: #ffcdd2;
-            color: #c62828;
-        }
-        
-        .restart-btn {
-            background: #4caf50;
-            font-size: 1.2em;
-            padding: 20px 30px;
-            min-height: 70px;
-        }
-        
-        .restart-btn:hover {
-            background: #45a049;
-        }
-        
-        .rules {
-            background: #e8f5e8;
-            padding: 20px;
-            border-radius: 8px;
-            margin: 20px 0;
-            border-left: 5px solid #4caf50;
-        }
-        
-        .rules ul {
-            margin: 10px 0;
-            padding-left: 20px;
-        }
-        
-        .rules li {
-            margin: 8px 0;
-            font-size: 1em;
-        }
-        
-        /* Адаптивность для планшетов */
-        @media (min-width: 768px) {
-            body {
-                padding: 30px;
-                font-size: 18px;
-            }
-            
-            .game-container {
-                padding: 40px;
-                max-width: 700px;
-            }
-            
-            h1 {
-                font-size: 2.2em;
-            }
-            
-            .buttons {
+
+        /* Планшеты и выше — сетка 2×2 */
+        @media (min-width: 600px) {
+            .choices {
                 display: grid;
                 grid-template-columns: 1fr 1fr;
-                gap: 15px;
+                gap: 16px;
             }
-            
-            button {
-                padding: 20px;
-                font-size: 1.1em;
-                min-height: 65px;
-            }
-            
-            .score {
-                font-size: 1.2em;
-                padding: 18px;
-            }
-            
-            .visitor-request {
-                padding: 25px;
-                font-size: 1.2em;
-            }
+            .speech-text { font-size: 1.1rem; }
         }
-        
-        /* Адаптивность для десктопов */
-        @media (min-width: 1024px) {
-            body {
-                padding: 40px;
-                font-size: 20px;
-            }
-            
-            .game-container {
-                padding: 50px;
-                max-width: 900px;
-            }
-            
-            h1 {
-                font-size: 2.5em;
-            }
-            
-            button {
-                padding: 22px;
-                font-size: 1.2em;
-                min-height: 70px;
-            }
-            
-            .score {
-                font-size: 1.3em;
-                padding: 20px;
-            }
-            
-            .visitor-request {
-                padding: 30px;
-                font-size: 1.3em;
-            }
-            
-            .result {
-                font-size: 1.4em;
-                padding: 25px;
-            }
-            
-            .game-over {
-                font-size: 1.5em;
-                padding: 30px;
-            }
-        }
-        
-        /* Улучшения для touch-устройств */
-        @media (max-width: 767px) {
-            button {
-                min-height: 65px;
-                font-size: 1.1em;
-            }
-            
-            .visitor-request {
-                font-size: 1.05em;
-            }
-        }
-        
-        /* Ландшафтная ориентация на мобильных */
-        @media (max-width: 767px) and (orientation: landscape) {
-            body {
-                padding: 10px;
-            }
-            
-            .game-container {
-                padding: 15px;
-            }
-            
-            h1 {
-                font-size: 1.5em;
-                margin-bottom: 15px;
-            }
-            
-            .buttons {
-                display: grid;
-                grid-template-columns: 1fr 1fr;
-                gap: 10px;
-            }
-            
-            button {
-                padding: 12px;
-                min-height: 50px;
-                font-size: 1em;
-            }
-            
-            .score {
-                padding: 12px;
-                font-size: 1em;
-            }
-            
-            .visitor-request {
-                padding: 15px;
-                font-size: 1em;
-            }
+
+        /* Десктоп */
+        @media (min-width: 992px) {
+            .speech-text { font-size: 1.2rem; }
+            .choices button { font-size: 1.1rem; }
         }
     </style>
 </head>
 <body>
-    <div class="game-container">
-        <h1>Банковский квест</h1>
-        
-        <div id="game-screen">
-            <div class="score">
-                Счёт: <span id="score">0</span> | Посетитель: <span id="visitor-count">0</span>
-            </div>
-            
-            <div id="start-screen">
-                <p>Добро пожаловать! Вы — сотрудник банка. Перед вами стоит очередь посетителей.</p>
-                <p>Они будут просить о различных операциях, а ваша задача — угадать, чего именно они хотят.</p>
-                
-                <div class="rules">
-                    <strong>Правила:</strong>
-                    <ul>
-                        <li>За правильный ответ: +1 балл</li>
-                        <li>За ошибку: -1 балл</li>
-                        <li>Победа при 10 баллах</li>
-                        <li>Поражение при -5 баллах</li>
-                    </ul>
-                </div>
-                
-                <div class="buttons">
-                    <button onclick="startGame()">Начать работу</button>
-                </div>
-            </div>
-            
-            <div id="game-play" style="display: none;">
-                <div class="visitor-request">
-                    <strong>Посетитель говорит:</strong><br>
-                    "<span id="visitor-request"></span>"
-                </div>
-                
-                <p><strong>Что вы предложите ему сделать?</strong></p>
-                
-                <div id="answer-buttons" class="buttons">
-                <button onclick="makeChoice('разменять мелкие деньги')">Разменять мелкие деньги</button>
-                <button onclick="makeChoice('разменять крупные деньги')">Разменять крупные деньги</button>
-                <button onclick="makeChoice('обменять валюту')">Сделать обмен валюты</button>
-                <button onclick="makeChoice('отправить перевод')">Отправить перевод</button>
-                </div>
-                
-                <div id="result" class="result" style="display: none;"></div>
-                
-                <div id="next-button" style="display: none;">
-                    <div class="buttons">
-                        <button onclick="nextVisitor()">Следующий посетитель</button>
-                    </div>
-                </div>
-            </div>
-            
-            <div id="game-over" style="display: none;">
-                <div id="game-over-message" class="game-over"></div>
-                <div class="buttons">
-                    <button class="restart-btn" onclick="restartGame()">Сыграть снова</button>
-                </div>
-            </div>
+    <header>Счёт: <span id="score">0</span> / Посетители: <span id="visitor-count">0</span></header>
+
+    <div class="game-wrapper">
+        <!-- Сцена -->
+        <div class="scene">
+            <img id="visitor-img" class="visitor-img" src="visitor1.png" alt="Посетитель">
+            <img class="speech" src="speech.png" alt="Облако">
+            <div id="speech-text" class="speech-text"></div>
         </div>
+
+        <!-- Выбор -->
+        <div class="choices" id="answer-buttons"></div>
     </div>
 
+    <div id="toast" class="toast"></div>
+
     <script>
-        let score = 0;
-        let visitorCount = 0;
-        let currentRequest = '';
-        
-        const requests = [
-            {
-                text: "У меня много мелочи, хочу поменять на крупные купюры",
-                answer: "разменять мелкие деньги"
-            },
-            {
-                text: "Мне нужно разменять эту тысячную купюру",
-                answer: "разменять крупные деньги"
-            },
-            {
-                text: "Хочу обменять доллары на рубли",
-                answer: "обменять валюту"
-            },
-            {
-                text: "Нужно отправить деньги родственникам в другой город",
-                answer: "отправить перевод"
-            },
-            {
-                text: "У меня куча монет, поменяйте на банкноты",
-                answer: "разменять мелкие деньги"
-            },
-            {
-                text: "Разбейте мне эту пятитысячную, пожалуйста",
-                answer: "разменять крупные деньги"
-            },
-            {
-                text: "Мне нужны евро вместо рублей",
-                answer: "обменять валюту"
-            },
-            {
-                text: "Переведите деньги на карту жены",
-                answer: "отправить перевод"
-            },
-            {
-                text: "Поменяйте мне мелочь на крупные деньги",
-                answer: "разменять мелкие деньги"
-            },
-            {
-                text: "Нужно разменять крупную купюру на мелкие",
-                answer: "разменять крупные деньги"
-            },
-            {
-                text: "Купите у меня валюту",
-                answer: "обменять валюту"
-            },
-            {
-                text: "Отправьте денежный перевод в Москву",
-                answer: "отправить перевод"
-            },
-            {
-                text: "Хочется избавиться от всей этой мелочевки",
-                answer: "разменять мелкие деньги"
-            },
-            {
-                text: "Поменяйте крупную банкноту на разменные",
-                answer: "разменять крупные деньги"
-            },
-            {
-                text: "Продам вам доллары по курсу",
-                answer: "обменять валюту"
-            },
-            {
-                text: "Нужно послать денег маме в деревню",
-                answer: "отправить перевод"
-            }
-        ];
-        
-        function startGame() {
-            score = 0;
-            visitorCount = 0;
-            document.getElementById('start-screen').style.display = 'none';
-            document.getElementById('game-over').style.display = 'none';
-            document.getElementById('game-play').style.display = 'block';
-            updateScore();
-            nextVisitor();
-        }
-        
-        function nextVisitor() {
-        // Победа/поражение проверяем сразу при входе
-            if (score >= 10) { gameOver(true); return; }
-            if (score <= -5) { gameOver(false); return; }
+    const visitors = [
+        {img:'visitor1.png'},
+        {img:'visitor2.png'},
+        {img:'visitor3.png'},
+        {img:'visitor4.png'}
+    ];
+    const requests=[
+        {text:'У меня много мелочи, хочу поменять на крупные купюры',answer:'мелкие'},
+        {text:'Мне нужно разменять эту тысячную купюру',answer:'крупные'},
+        {text:'Хочу обменять доллары на рубли',answer:'валюта'},
+        {text:'Нужно отправить деньги родственникам в другой город',answer:'перевод'},
+        {text:'У меня куча монет, поменяйте на банкноты',answer:'мелкие'},
+        {text:'Разбейте мне эту пятитысячную, пожалуйста',answer:'крупные'},
+        {text:'Мне нужны евро вместо рублей',answer:'валюта'},
+        {text:'Переведите деньги на карту жены',answer:'перевод'}
+    ];
+    const answers=[
+        {label:'Разменять мелкие деньги',value:'мелкие'},
+        {label:'Разменять крупные деньги',value:'крупные'},
+        {label:'Сделать обмен валюты',value:'валюта'},
+        {label:'Отправить перевод',value:'перевод'}
+    ];
+    let score=0,visitorCount=0,currentRequest='';
 
-            visitorCount++;
-            const randomRequest = requests[Math.floor(Math.random() * requests.length)];
-            currentRequest = randomRequest.answer;
+    const speechEl=document.getElementById('speech-text');
+    const visitorImg=document.getElementById('visitor-img');
+    const btnContainer=document.getElementById('answer-buttons');
+    const toast=document.getElementById('toast');
 
-            // Обновляем текст вопроса
-            document.getElementById('visitor-request').textContent = randomRequest.text;
+    function init(){
+        // Создать кнопки
+        answers.forEach(a=>{
+            const btn=document.createElement('button');
+            btn.textContent=a.label;
+            btn.onclick=()=>select(a.value);
+            btnContainer.appendChild(btn);
+        });
+        nextVisitor();
+    }
 
-            // Переключаем UI: показываем ответы, прячем результат
-            document.getElementById('answer-buttons').style.display = 'flex';
-            document.getElementById('result').style.display = 'none';
-            document.getElementById('next-button').style.display = 'none';
+    function nextVisitor(){
+        if(score>=10){toastMsg('🎉 Победа!');disableButtons();return;}
+        if(score<=-5){toastMsg('😞 Поражение');disableButtons();return;}
+        visitorCount++;
+        // Обновить счёт
+        document.getElementById('score').textContent=score;
+        document.getElementById('visitor-count').textContent=visitorCount;
+        // Новый запрос и персонаж
+        const req=requests[Math.floor(Math.random()*requests.length)];
+        currentRequest=req.answer;
+        speechEl.textContent=req.text;
+        const vis=visitors[Math.floor(Math.random()*visitors.length)];
+        visitorImg.src=vis.img;
+    }
 
-            updateScore();
-        }
+    function select(value){
+        if(value===currentRequest){score++;toastMsg('✅ Верно +1');}
+        else{score--;toastMsg('❌ Ошибка -1');}
+        // обновить счёт visual
+        document.getElementById('score').textContent=score;
+        setTimeout(nextVisitor,2000); // ждать пока тост исчезнет
+    }
 
-        function makeChoice(choice) {
-            const resultDiv = document.getElementById('result');
+    function toastMsg(msg){
+        toast.textContent=msg;
+        toast.style.display='block';
+        setTimeout(()=>{toast.style.display='none';},2000);
+    }
 
-            // Скрываем ответы
-            document.getElementById('answer-buttons').style.display = 'none';
+    function disableButtons(){
+        [...btnContainer.querySelectorAll('button')].forEach(b=>b.disabled=true);
+    }
 
-            if (choice === currentRequest) {
-                score++;
-                resultDiv.innerHTML = '✅ Правильно! +1 балл';
-                resultDiv.className = 'result correct';
-            } else {
-                score--;
-                resultDiv.innerHTML = '❌ Неправильно! -1 балл';
-                resultDiv.className = 'result incorrect';
-            }
-
-            resultDiv.style.display = 'block';
-            document.getElementById('next-button').style.display = 'block';
-
-            // Здесь же сразу проверим победу/поражение, чтобы не зависеть только от nextVisitor
-            if (score >= 3) { gameOver(true); return; }
-            if (score <= -1) { gameOver(false); return; }
-
-            updateScore();
-        }
-
-        
-        function updateScore() {
-            document.getElementById('score').textContent = score;
-            document.getElementById('visitor-count').textContent = visitorCount;
-        }
-        
-        function gameOver(victory) {
-            document.getElementById('game-play').style.display = 'none';
-            document.getElementById('game-over').style.display = 'block';
-            
-            const messageDiv = document.getElementById('game-over-message');
-            if (victory) {
-                messageDiv.innerHTML = '🎉 Поздравляем! 🎉<br>Вы отлично справились и набрали 10 баллов!';
-                messageDiv.className = 'game-over victory';
-            } else {
-                messageDiv.innerHTML = '😞 Игра окончена 😞<br>Слишком много ошибок. Попробуйте снова!';
-                messageDiv.className = 'game-over defeat';
-            }
-        }
-        
-        function restartGame() {
-            startGame();
-        }
+    window.addEventListener('load',init);
     </script>
 </body>
 </html>
