@@ -15,14 +15,14 @@ const levels = [
         thumb: 'assets/images/levels/level1.jpg',
         type: 'internal' // запускаем текущую игру
     },
-    {
-        id: 'level2',
-        title: 'Пример интеграции внешних продуктов',
-        desc: 'Небольшой интерактивный рассказ о банковских услугах.',
-        thumb: 'assets/images/levels/level3.png',
-        type: 'link',
-        href: 'twine-game.html'
-    },
+    // {
+    //     id: 'level2',
+    //     title: 'Пример интеграции внешних продуктов',
+    //     desc: 'Небольшой интерактивный рассказ о банковских услугах.',
+    //     thumb: 'assets/images/levels/level3.png',
+    //     type: 'link',
+    //     href: 'twine-game.html'
+    // },
     
     {
         id: 'level4',
