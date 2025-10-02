@@ -265,6 +265,10 @@
         
         /* По умолчанию скрываем оба экрана */
         .level-screen, .game-wrapper { display: none; }
+        
+        /* Показываем экраны когда не скрыты */
+        .level-screen:not(.hidden) { display: flex; flex-direction: column; align-items: center; }
+        .game-wrapper:not(.hidden) { display: flex; }
 
         .level-screen {
             width: 100%;
