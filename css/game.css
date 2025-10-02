@@ -1,0 +1,82 @@
+/* Основная игровая зона */
+.game-wrapper {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    padding: 0 15px;
+    margin-top: 0;
+    z-index: 10;
+}
+
+/* Сцена с персонажем и облаком */
+.scene {
+    width: 100%;
+    max-width: 560px;
+    margin-top: 0;
+}
+
+.scene-anchor {
+    position: relative;
+    width: 100%;
+    max-width: 560px;
+    margin: 0 auto;
+    display: grid;
+    align-items: center;
+    justify-items: start;
+    aspect-ratio: 5 / 4;
+}
+
+/* Персонаж стоит на полу */
+.visitor-img {
+    width: min(42%, 220px);
+    height: auto;
+    max-height: 45%;
+    object-fit: contain;
+    z-index: 1;
+    align-self: end;
+    position: relative;
+    top: -41.5%; 
+    left: 5%;
+}
+
+/* Позиционирование пузыря */
+:root {
+    --bubble-top: 10%;
+    --bubble-left: 5%;
+    --bubble-width: 90%;
+    --bubble-right: 5%;
+}
+
+.speech {
+    position: absolute;
+    top: var(--bubble-top);
+    left: var(--bubble-left);
+    width: var(--bubble-width);
+    height: auto;
+    object-fit: contain;
+    z-index: 2;
+    pointer-events: none;
+}
+
+.speech-text {
+    position: absolute;
+    top: 15%; 
+    left: 48%;
+    width: calc(var(--bubble-width) - 50%);
+    max-height: 46%;
+    overflow: hidden;
+    overflow-wrap: anywhere;
+    word-break: break-word;
+    hyphens: auto;
+    line-height: 1.35;
+    font-size: clamp(14px, 2.2vw, 19px);
+    font-weight: 700;
+    color: #56FFFF;
+    z-index: 3;
+}

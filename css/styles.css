@@ -1,0 +1,53 @@
+/* Подключение шрифтов */
+@font-face {
+    font-family: 'Gazprombank Sans DemiBold';
+    src: url('../Fonts/Gazprombank Sans DemiBold.ttf') format('truetype');
+    font-weight: 600;
+    font-style: normal;
+    font-display: swap;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: "Segoe UI", Roboto, Arial, sans-serif;
+    position: relative;
+
+    /* два слоя: 1) изображение (сверху), 2) заливка цветом (снизу) */
+    background-image: url('../assets/images/backgrounds/bank-bg.png'), linear-gradient(#F5F5DC, #F5F5DC);
+    background-position: center top, center;
+    background-size: cover, 100% 100%;
+    background-repeat: no-repeat, no-repeat;
+
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    color: #56FFFF;
+}
+
+/* Верхняя панель со счётом и иконками */
+header {
+    padding: 8px 12px;
+    font-size: 0.9rem;
+    text-align: right;
+    background: rgba(0, 0, 0, 0.65);
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 15px;
+}
+
+.score-item {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-weight: 600;
+}
+
+.score-icon {
+    width: 18px;
+    height: 18px;
+}

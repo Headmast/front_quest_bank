@@ -1,0 +1,31 @@
+/* Модальное окно (пауза/результат) */
+.modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.45); display: flex; align-items: center; justify-content: center; z-index: 10000; }
+.modal-overlay.hidden { display: none; }
+
+.modal-box { width: min(92vw, 520px); background: #fff; border-radius: 14px; padding: 18px; box-shadow: 0 10px 30px rgba(0,0,0,0.35); }
+.modal-box h2 { margin: 0 0 8px 0; font-size: 1.4rem; color: #56FFFF; }
+.modal-box p { margin: 0 0 14px 0; line-height: 1.45; color: #56FFFF; }
+.modal-actions { display: flex; gap: 10px; flex-wrap: wrap; }
+.btn { padding: 10px 14px; border: 3px solid #56FFFF; border-radius: 10px; font-family: 'Gazprombank Sans DemiBold', "Segoe UI", Roboto, Arial, sans-serif; font-weight: 700; cursor: pointer; }
+.btn-primary { background: #000000; color: #56FFFF; }
+.btn-primary:hover { background: #56FFFF; color: #000000; }
+.btn-secondary { background: #000000; color: #56FFFF; }
+.btn-secondary:hover { background: #56FFFF; color: #000000; }
+
+/* Кнопка открытия меню (слева сверху) */
+.menu-fab {
+    position: fixed;
+    top: 10px;
+    left: 10px;
+    z-index: 10001;
+    padding: 8px 12px;
+    border-radius: 10px;
+    border: 3px solid #56FFFF;
+    background: #000000;
+    color: #56FFFF;
+    font-family: 'Gazprombank Sans DemiBold', "Segoe UI", Roboto, Arial, sans-serif;
+    font-weight: 700;
+    cursor: pointer;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+}
+.menu-fab:hover { background: #56FFFF; color: #000000; }

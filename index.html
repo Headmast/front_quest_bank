@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Банковский квест</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- Подключение CSS -->
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/game.css">
+    <link rel="stylesheet" href="css/buttons.css">
+    <link rel="stylesheet" href="css/levels.css">
+    <link rel="stylesheet" href="css/modal.css">
+</head>
+
+<body>
+    <header>
+        <div class="score-item">
+            <!-- <img src="assets/images/ui/coin-icon.png" class="score-icon" alt="Счёт"> -->
+            <span id="score-label">Баллы</span>
+            <span id="score">0</span>
+        </div>
+        <!-- <div class="score-item">
+            <img src="assets/images/ui/visitor-icon.png" class="score-icon" alt="Посетители">
+            <span id="visitor-count">0</span>
+        </div> -->
+    </header>
+
+    <!-- Экран выбора уровней -->
+    <div id="level-screen" class="level-screen">
+        <div class="level-grid" id="level-grid"></div>
+        <div class="level-info">
+            <h2 id="level-title">Выберите уровень</h2>
+            <p id="level-desc">Нажмите на одну из карточек уровней выше, чтобы увидеть описание.</p>
+            <button id="play-btn" class="play-btn" disabled>Играть</button>
+        </div>
+    </div>
+
+    <!-- Игровой экран -->
+    <div id="game-screen" class="game-wrapper hidden">
+        <button id="open-menu-btn" class="menu-fab hidden" aria-label="Меню">≡</button>
+        <!-- Сцена -->
+        <div class="scene">
+            <div class="scene-anchor">
+                <img id="visitor-img" class="visitor-img" src="assets/images/visitors/visitor1.png" alt="Посетитель">
+                <img class="speech" src="assets/images/ui/speech.png" alt="Облако">
+                <div id="speech-text" class="speech-text"></div>
+            </div>
+        </div>
+
+        <!-- Выбор -->
+        <div class="choices" id="answer-buttons"></div>
+    </div>
+
+    <div id="toast" class="toast">
+        <img id="toast-icon" class="toast-icon" src="assets/images/ui/coin-icon.png" alt="Результат">
+        <span id="toast-text"></span>
+    </div>
+
+    <!-- Модальные окна: пауза/результат -->
+    <div id="modal" class="modal-overlay hidden" role="dialog" aria-modal="true" aria-labelledby="modal-title" aria-describedby="modal-text">
+        <div class="modal-box">
+            <h2 id="modal-title">Пауза</h2>
+            <p id="modal-text">Игра приостановлена.</p>
+            <div class="modal-actions">
+                <button id="btn-continue" class="btn btn-primary">Продолжить</button>
+                <button id="btn-replay" class="btn btn-secondary">Переиграть</button>
+                <button id="btn-menu" class="btn btn-secondary">В меню</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Подключение JavaScript модулей -->
+    <script src="js/resources.js"></script>
+    <script src="js/levels.js"></script>
+    <script src="js/game.js"></script>
+    <script src="js/modal.js"></script>
+    <script src="js/main.js"></script>
+</body>
+
+</html>
