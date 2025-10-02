@@ -12,37 +12,58 @@
         body {
             margin: 0;
             font-family: "Segoe UI", Roboto, Arial, sans-serif;
-            background: url('bank-bg.png') center/cover no-repeat fixed;
+
+            /* два слоя: 1) изображение (сверху), 2) заливка цветом (снизу) */
+            background-image: url('bank-bg.png'), linear-gradient(#F5F5DC, #F5F5DC);
+            background-position: center top, center;
+            background-size: cover, 100% 100%;
+            background-repeat: no-repeat, no-repeat;
+
             min-height: 100vh;
             display: flex;
             flex-direction: column;
             color: #212121;
         }
 
-        /* Верхняя панель со счётом */
+        /* Верхняя панель со счётом и иконками */
         header {
-            padding: 6px 10px;
-            font-size: 0.85rem;
+            padding: 8px 12px;
+            font-size: 0.9rem;
             text-align: right;
-            background: rgba(255, 255, 255, 0.7);
+            background: rgba(255, 255, 255, 0.85);
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            gap: 15px;
         }
 
-        /* Основная игровая зона разбита горизонтально */
+        .score-item {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            font-weight: 600;
+        }
+
+        .score-icon {
+            width: 18px;
+            height: 18px;
+        }
+
+        /* Основная игровая зона */
         .game-wrapper {
             flex: 1;
             display: flex;
             flex-direction: column;
             justify-content: flex-start;
             align-items: center;
+            padding: 0 15px;
         }
 
-        /* Верх: персонаж + облако реплики */
+        /* Сцена с персонажем и облаком */
         .scene {
             width: 100%;
             max-width: 560px;
-            margin-top: 5vh;
-            padding: 0 12px;
-            /* чтобы край облака не прилипал к краям экрана */
+            margin-top: 3vh;
         }
 
         .scene-anchor {
@@ -50,32 +71,27 @@
             width: 100%;
             max-width: 560px;
             margin: 0 auto;
-            /* Вместо «персонаж стоит на нижней линии» — центрируем по высоте */
             display: grid;
             align-items: center;
-            /* центруем по вертикали */
             justify-items: start;
-            /* персонаж слева */
             aspect-ratio: 16 / 10;
-            /* стабильная рамка сцены */
         }
 
-        /* Персонаж: не больше 48% ширины сцены, авто-высота, без «прилипаний» вниз */
+        /* Персонаж стоит на полу */
         .visitor-img {
             width: min(42%, 220px);
-            /* как было «ок», но ограничим сверху */
             height: auto;
             max-height: 80%;
-            /* не раздувается вертикально */
             object-fit: contain;
             z-index: 1;
+            align-self: end;
+            /* персонаж стоит внизу на полу */
         }
 
+        /* Позиционирование пузыря */
         :root {
             --bubble-top: 8%;
-            /* поднять чуть выше центра */
             --bubble-left: 40%;
-            /* сдвинуть правее от головы персонажа */
             --bubble-width: 58%;
         }
 
@@ -90,76 +106,85 @@
             pointer-events: none;
         }
 
-
         .speech-text {
             position: absolute;
-            /* Внутренние поля относительно пузыря */
             top: calc(var(--bubble-top) + 25%);
-            left: calc(var(--bubble-left) + 9%);
+            left: calc(var(--bubble-left) + 12%);
             width: calc(var(--bubble-width) - 18%);
             max-height: 46%;
-
             overflow: hidden;
             overflow-wrap: anywhere;
             word-break: break-word;
             hyphens: auto;
             line-height: 1.35;
-
-            /* Размер шрифта адаптивный, но с верхней границей */
             font-size: clamp(14px, 2.2vw, 19px);
             font-weight: 700;
             color: #111;
             z-index: 3;
         }
 
-
-        /* Нижняя зона с вариантами ответов */
+        /* Кнопки с цветами из общей палитры банка */
         .choices {
             width: 100%;
             max-width: 500px;
             display: flex;
             flex-direction: column;
-            gap: 14px;
-            margin: 5vh 0;
+            gap: 12px;
+            margin: 4vh 15px 5vh 15px;
+            /* отступы на маленьких экранах */
         }
 
         .choices button {
-            padding: 16px 14px;
+            padding: 16px 20px;
             border: none;
             border-radius: 10px;
             font-size: 1rem;
             font-weight: 600;
-            background: #1976d2;
-            color: #fff;
+            background: #D4AF37;
+            /* золотистый цвет банка */
+            color: #2C1810;
+            /* тёмно-коричневый текст */
             cursor: pointer;
-            transition: background 0.3s;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
 
         .choices button:hover {
-            background: #0d47a1;
+            background: #B8941F;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
         }
 
         .choices button:active {
             transform: scale(0.97);
         }
 
-        /* Всплывающий индикатор правильности */
+        /* Всплывающий индикатор с иконкой */
         .toast {
             position: fixed;
-            top: 10vh;
+            top: 15vh;
             left: 50%;
             transform: translateX(-50%);
-            background: rgba(255, 255, 255, 0.9);
-            padding: 14px 20px;
-            border-radius: 8px;
-            font-size: 1rem;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 16px 24px;
+            border-radius: 10px;
+            font-size: 1.1rem;
             font-weight: 700;
             color: #000;
-            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
             display: none;
             z-index: 9999;
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
 
+        .toast-icon {
+            width: 20px;
+            height: 20px;
+        }
+
+        /* Адаптивность */
         @media (max-width: 480px) {
             :root {
                 --bubble-top: 6%;
@@ -179,6 +204,34 @@
                 max-height: 48%;
                 font-size: clamp(13px, 3.6vw, 18px);
             }
+
+            .choices {
+                margin: 3vh 12px 4vh 12px;
+                /* сохраняем отступы */
+            }
+
+            .choices button {
+                padding: 18px 16px;
+                font-size: 1rem;
+            }
+        }
+
+        @media (min-width: 600px) {
+            .choices {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 16px;
+                margin: 4vh 0 5vh 0;
+            }
+
+            .speech-text {
+                font-size: clamp(16px, 2.4vw, 20px);
+            }
+
+            .choices button {
+                padding: 18px 20px;
+                font-size: 1.1rem;
+            }
         }
 
         @media (min-width: 768px) {
@@ -188,11 +241,31 @@
                 --bubble-width: 56%;
             }
         }
+
+        @media (min-width: 992px) {
+            .speech-text {
+                font-size: clamp(18px, 2.6vw, 22px);
+            }
+
+            .choices button {
+                font-size: 1.2rem;
+                padding: 20px 24px;
+            }
+        }
     </style>
 </head>
 
 <body>
-    <header>Счёт: <span id="score">0</span> / Посетители: <span id="visitor-count">0</span></header>
+    <header>
+        <div class="score-item">
+            <img src="coin-icon.png" class="score-icon" alt="Счёт">
+            <span id="score">0</span>
+        </div>
+        <div class="score-item">
+            <img src="visitor-icon.png" class="score-icon" alt="Посетители">
+            <span id="visitor-count">0</span>
+        </div>
+    </header>
 
     <div class="game-wrapper">
         <!-- Сцена -->
@@ -208,7 +281,10 @@
         <div class="choices" id="answer-buttons"></div>
     </div>
 
-    <div id="toast" class="toast"></div>
+    <div id="toast" class="toast">
+        <img id="toast-icon" class="toast-icon" src="coin-icon.png" alt="Результат">
+        <span id="toast-text"></span>
+    </div>
 
     <script>
         const visitors = [
@@ -225,7 +301,11 @@
             { text: 'У меня куча монет, поменяйте на банкноты', answer: 'мелкие' },
             { text: 'Разбейте мне эту пятитысячную, пожалуйста', answer: 'крупные' },
             { text: 'Мне нужны евро вместо рублей', answer: 'валюта' },
-            { text: 'Переведите деньги на карту жены', answer: 'перевод' }
+            { text: 'Переведите деньги на карту жены', answer: 'перевод' },
+            { text: 'Хочется избавиться от всей этой мелочевки', answer: 'мелкие' },
+            { text: 'Поменяйте крупную банкноту на разменные', answer: 'крупные' },
+            { text: 'Продам вам доллары по курсу', answer: 'валюта' },
+            { text: 'Нужно послать денег маме в деревню', answer: 'перевод' }
         ];
         const answers = [
             { label: 'Разменять мелкие деньги', value: 'мелкие' },
@@ -239,8 +319,12 @@
         const visitorImg = document.getElementById('visitor-img');
         const btnContainer = document.getElementById('answer-buttons');
         const toast = document.getElementById('toast');
+        const toastIcon = document.getElementById('toast-icon');
+        const toastText = document.getElementById('toast-text');
 
         function init() {
+            toast.style.display = 'none';
+            toastText.textContent = '';
             // Создать кнопки
             answers.forEach(a => {
                 const btn = document.createElement('button');
@@ -252,12 +336,19 @@
         }
 
         function nextVisitor() {
-            if (score >= 10) { toastMsg('🎉 Победа!'); disableButtons(); return; }
-            if (score <= -5) { toastMsg('😞 Поражение'); disableButtons(); return; }
+            if (score >= 10) {
+                toastMsg('🎉 Победа!', 'coin-icon.png');
+                disableButtons();
+                return;
+            }
+            if (score <= -5) {
+                toastMsg('😞 Поражение', 'coin-icon.png');
+                disableButtons();
+                return;
+            }
             visitorCount++;
-            // Обновить счёт
-            document.getElementById('score').textContent = score;
-            document.getElementById('visitor-count').textContent = visitorCount;
+            updateScore();
+
             // Новый запрос и персонаж
             const req = requests[Math.floor(Math.random() * requests.length)];
             currentRequest = req.answer;
@@ -267,17 +358,35 @@
         }
 
         function select(value) {
-            if (value === currentRequest) { score++; toastMsg('✅ Верно +1'); }
-            else { score--; toastMsg('❌ Ошибка -1'); }
-            // обновить счёт visual
-            document.getElementById('score').textContent = score;
-            setTimeout(nextVisitor, 2000); // ждать пока тост исчезнет
+            // 1) посчитать результат
+            const wasCorrect = (value === currentRequest);
+            score += wasCorrect ? 1 : -1;
+            updateScore();
+
+            // 2) сразу переключить на нового посетителя и новый вопрос
+            nextVisitor(); // это обновит персонажа, вопрос и проверит победу/поражение
+
+            // Если наступила победа/поражение, nextVisitor сам покажет тост и отключит кнопки,
+            // в этом случае второй тост не нужен:
+            if (score >= 10 || score <= -5) return;
+
+            // 3) через короткую задержку показать тост по предыдущему ответу
+            setTimeout(() => {
+                toastMsg(wasCorrect ? '✅ Верно +1' : '❌ Ошибка -1', 'coin-icon.png');
+            }, 150); // 100–200 мс достаточно, чтобы экран уже сменился
         }
 
-        function toastMsg(msg) {
-            toast.textContent = msg;
-            toast.style.display = 'block';
+
+        function toastMsg(msg, iconSrc) {
+            toastText.textContent = msg;
+            toastIcon.src = iconSrc;
+            toast.style.display = 'flex';
             setTimeout(() => { toast.style.display = 'none'; }, 2000);
+        }
+
+        function updateScore() {
+            document.getElementById('score').textContent = score;
+            document.getElementById('visitor-count').textContent = visitorCount;
         }
 
         function disableButtons() {
