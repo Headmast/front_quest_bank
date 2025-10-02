@@ -81,25 +81,28 @@
             display: grid;
             align-items: center;
             justify-items: start;
-            aspect-ratio: 16 / 10;
+            aspect-ratio: 5 / 4;
         }
 
         /* Персонаж стоит на полу */
         .visitor-img {
             width: min(42%, 220px);
             height: auto;
-            max-height: 80%;
+            max-height: 45%;
             object-fit: contain;
             z-index: 1;
             align-self: end;
-            /* персонаж стоит внизу на полу */
+            position: relative;
+            top: -41.5%; 
+            left: 5%;
         }
 
         /* Позиционирование пузыря */
         :root {
-            --bubble-top: 8%;
-            --bubble-left: 40%;
-            --bubble-width: 58%;
+            --bubble-top: 10%;
+            --bubble-left: 5%;
+            --bubble-width: 90%;
+            --bubble-right: 5%;
         }
 
         .speech {
@@ -115,9 +118,9 @@
 
         .speech-text {
             position: absolute;
-            top: calc(var(--bubble-top) + 25%);
-            left: calc(var(--bubble-left) + 12%);
-            width: calc(var(--bubble-width) - 18%);
+            top: 15%; 
+            left: 48%;
+            width: calc(var(--bubble-width) - 50%);
             max-height: 46%;
             overflow: hidden;
             overflow-wrap: anywhere;
@@ -192,7 +195,7 @@
         }
 
         /* Адаптивность */
-        @media (max-width: 480px) {
+        /* @media (max-width: 480px) {
             :root {
                 --bubble-top: 6%;
                 --bubble-left: 38%;
@@ -214,16 +217,16 @@
 
             .choices {
                 margin: 10px 12px 4vh 12px;
-                /* сохраняем отступы */
+                /// сохраняем отступы
             }
 
             .choices button {
                 padding: 18px 16px;
                 font-size: 1rem;
             }
-        }
+        } */
 
-        @media (min-width: 600px) {
+        /* @media (min-width: 600px) {
             .choices {
                 display: grid;
                 grid-template-columns: 1fr 1fr;
@@ -239,17 +242,17 @@
                 padding: 18px 20px;
                 font-size: 1.1rem;
             }
-        }
+        } */
 
-        @media (min-width: 768px) {
+        /* @media (min-width: 768px) {
             :root {
                 --bubble-top: 7%;
                 --bubble-left: 41%;
                 --bubble-width: 56%;
             }
-        }
+        } */
 
-        @media (min-width: 992px) {
+        /* @media (min-width: 992px) {
             .speech-text {
                 font-size: clamp(18px, 2.6vw, 22px);
             }
@@ -258,7 +261,7 @@
                 font-size: 1.2rem;
                 padding: 20px 24px;
             }
-        }
+        } */
 
         /* Экран выбора уровней */
         .hidden { display: none; }
@@ -267,8 +270,11 @@
         .level-screen, .game-wrapper { display: none; }
         
         /* Показываем экраны когда не скрыты */
-        .level-screen:not(.hidden) { display: flex; flex-direction: column; align-items: center; }
-        .game-wrapper:not(.hidden) { display: flex; }
+        .level-screen:not(.hidden) { display: flex !important; flex-direction: column; align-items: center; }
+        .game-wrapper:not(.hidden) { display: flex !important; }
+        
+        /* Принудительно скрываем когда есть класс hidden */
+        .level-screen.hidden, .game-wrapper.hidden { display: none !important; }
 
         .level-screen {
             width: 100%;
@@ -743,6 +749,16 @@
             // Сначала скрываем все экраны
             document.getElementById('level-screen').classList.add('hidden');
             document.getElementById('game-screen').classList.add('hidden');
+            
+            // БЫСТРАЯ ОТЛАДКА: автозапуск первой игры (закомментируйте для обычной работы)
+            const DEBUG_AUTO_START = true;
+            if (DEBUG_AUTO_START && !window.location.search) {
+                mode = 'normal';
+                document.getElementById('game-screen').classList.remove('hidden');
+                document.getElementById('open-menu-btn').classList.remove('hidden');
+                initGame();
+                return;
+            }
             
             // Проверяем URL параметры для автозапуска игры
             const params = new URLSearchParams(window.location.search);
