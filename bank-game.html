@@ -2,94 +2,288 @@
 <html>
 <head>
     <title>Банковский квест</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
+        * {
+            box-sizing: border-box;
+        }
+        
         body {
             font-family: Arial, sans-serif;
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 20px;
+            margin: 0;
+            padding: 15px;
             background-color: #f5f5f5;
+            min-height: 100vh;
+            font-size: 16px;
+            line-height: 1.4;
         }
+        
         .game-container {
             background: white;
-            padding: 30px;
-            border-radius: 10px;
+            padding: 20px;
+            border-radius: 12px;
             box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            max-width: 100%;
+            margin: 0 auto;
         }
+        
+        h1 {
+            text-align: center;
+            color: #263238;
+            margin: 0 0 20px 0;
+            font-size: 1.8em;
+        }
+        
         .score {
             text-align: center;
-            font-size: 18px;
+            font-size: 1.1em;
             font-weight: bold;
             margin-bottom: 20px;
-            padding: 10px;
-            background: #e3f2fd;
-            border-radius: 5px;
+            padding: 15px;
+            background: #263238;
+            color: white;
+            border-radius: 8px;
         }
+        
         .visitor-request {
-            background: #fff3e0;
-            padding: 15px;
-            border-radius: 5px;
+            background: #37474F;
+            color: white;
+            padding: 20px;
+            border-radius: 8px;
             margin: 20px 0;
-            border-left: 4px solid #ff9800;
+            border-left: 5px solid #ff9800;
+            font-size: 1.1em;
         }
+        
         .buttons {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 10px;
-            margin: 20px 0;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin: 25px 0;
         }
+        
         button {
-            padding: 15px;
-            font-size: 16px;
+            padding: 18px 20px;
+            font-size: 1.1em;
             border: none;
-            border-radius: 5px;
+            border-radius: 8px;
             cursor: pointer;
-            background: #2196f3;
+            background: #1976D2;
             color: white;
             transition: background 0.3s;
+            font-weight: 600;
+            min-height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
         }
+        
         button:hover {
-            background: #1976d2;
+            background: #0D47A1;
         }
+        
+        button:active {
+            transform: scale(0.98);
+        }
+        
         .result {
             text-align: center;
-            font-size: 18px;
+            font-size: 1.2em;
             font-weight: bold;
-            padding: 15px;
+            padding: 20px;
             margin: 20px 0;
-            border-radius: 5px;
+            border-radius: 8px;
         }
+        
         .correct {
             background: #c8e6c9;
             color: #2e7d32;
         }
+        
         .incorrect {
             background: #ffcdd2;
             color: #c62828;
         }
+        
         .game-over {
             text-align: center;
-            font-size: 20px;
+            font-size: 1.3em;
             font-weight: bold;
-            padding: 20px;
-            border-radius: 5px;
+            padding: 25px;
+            border-radius: 8px;
             margin: 20px 0;
         }
+        
         .victory {
             background: #c8e6c9;
             color: #2e7d32;
         }
+        
         .defeat {
             background: #ffcdd2;
             color: #c62828;
         }
+        
         .restart-btn {
             background: #4caf50;
-            font-size: 18px;
-            padding: 15px 30px;
+            font-size: 1.2em;
+            padding: 20px 30px;
+            min-height: 70px;
         }
+        
         .restart-btn:hover {
             background: #45a049;
+        }
+        
+        .rules {
+            background: #e8f5e8;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            border-left: 5px solid #4caf50;
+        }
+        
+        .rules ul {
+            margin: 10px 0;
+            padding-left: 20px;
+        }
+        
+        .rules li {
+            margin: 8px 0;
+            font-size: 1em;
+        }
+        
+        /* Адаптивность для планшетов */
+        @media (min-width: 768px) {
+            body {
+                padding: 30px;
+                font-size: 18px;
+            }
+            
+            .game-container {
+                padding: 40px;
+                max-width: 700px;
+            }
+            
+            h1 {
+                font-size: 2.2em;
+            }
+            
+            .buttons {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 15px;
+            }
+            
+            button {
+                padding: 20px;
+                font-size: 1.1em;
+                min-height: 65px;
+            }
+            
+            .score {
+                font-size: 1.2em;
+                padding: 18px;
+            }
+            
+            .visitor-request {
+                padding: 25px;
+                font-size: 1.2em;
+            }
+        }
+        
+        /* Адаптивность для десктопов */
+        @media (min-width: 1024px) {
+            body {
+                padding: 40px;
+                font-size: 20px;
+            }
+            
+            .game-container {
+                padding: 50px;
+                max-width: 900px;
+            }
+            
+            h1 {
+                font-size: 2.5em;
+            }
+            
+            button {
+                padding: 22px;
+                font-size: 1.2em;
+                min-height: 70px;
+            }
+            
+            .score {
+                font-size: 1.3em;
+                padding: 20px;
+            }
+            
+            .visitor-request {
+                padding: 30px;
+                font-size: 1.3em;
+            }
+            
+            .result {
+                font-size: 1.4em;
+                padding: 25px;
+            }
+            
+            .game-over {
+                font-size: 1.5em;
+                padding: 30px;
+            }
+        }
+        
+        /* Улучшения для touch-устройств */
+        @media (max-width: 767px) {
+            button {
+                min-height: 65px;
+                font-size: 1.1em;
+            }
+            
+            .visitor-request {
+                font-size: 1.05em;
+            }
+        }
+        
+        /* Ландшафтная ориентация на мобильных */
+        @media (max-width: 767px) and (orientation: landscape) {
+            body {
+                padding: 10px;
+            }
+            
+            .game-container {
+                padding: 15px;
+            }
+            
+            h1 {
+                font-size: 1.5em;
+                margin-bottom: 15px;
+            }
+            
+            .buttons {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 10px;
+            }
+            
+            button {
+                padding: 12px;
+                min-height: 50px;
+                font-size: 1em;
+            }
+            
+            .score {
+                padding: 12px;
+                font-size: 1em;
+            }
+            
+            .visitor-request {
+                padding: 15px;
+                font-size: 1em;
+            }
         }
     </style>
 </head>
@@ -105,14 +299,20 @@
             <div id="start-screen">
                 <p>Добро пожаловать! Вы — сотрудник банка. Перед вами стоит очередь посетителей.</p>
                 <p>Они будут просить о различных операциях, а ваша задача — угадать, чего именно они хотят.</p>
-                <p><strong>Правила:</strong></p>
-                <ul>
-                    <li>За правильный ответ: +1 балл</li>
-                    <li>За ошибку: -1 балл</li>
-                    <li>Победа при 10 баллах</li>
-                    <li>Поражение при -5 баллах</li>
-                </ul>
-                <button onclick="startGame()">Начать работу</button>
+                
+                <div class="rules">
+                    <strong>Правила:</strong>
+                    <ul>
+                        <li>За правильный ответ: +1 балл</li>
+                        <li>За ошибку: -1 балл</li>
+                        <li>Победа при 10 баллах</li>
+                        <li>Поражение при -5 баллах</li>
+                    </ul>
+                </div>
+                
+                <div class="buttons">
+                    <button onclick="startGame()">Начать работу</button>
+                </div>
             </div>
             
             <div id="game-play" style="display: none;">
@@ -121,25 +321,27 @@
                     "<span id="visitor-request"></span>"
                 </div>
                 
-                <p>Что вы предложите ему сделать?</p>
+                <p><strong>Что вы предложите ему сделать?</strong></p>
                 
-                <div class="buttons">
-                    <button onclick="makeChoice('разменять мелкие деньги')">Разменять мелкие деньги</button>
-                    <button onclick="makeChoice('разменять крупные деньги')">Разменять крупные деньги</button>
-                    <button onclick="makeChoice('обменять валюту')">Сделать обмен валюты</button>
-                    <button onclick="makeChoice('отправить перевод')">Отправить перевод</button>
+                <div id="answer-buttons" class="buttons">
+                <button onclick="makeChoice('разменять мелкие деньги')">Разменять мелкие деньги</button>
+                <button onclick="makeChoice('разменять крупные деньги')">Разменять крупные деньги</button>
+                <button onclick="makeChoice('обменять валюту')">Сделать обмен валюты</button>
+                <button onclick="makeChoice('отправить перевод')">Отправить перевод</button>
                 </div>
                 
                 <div id="result" class="result" style="display: none;"></div>
                 
-                <div id="next-button" style="display: none; text-align: center;">
-                    <button onclick="nextVisitor()">Следующий посетитель</button>
+                <div id="next-button" style="display: none;">
+                    <div class="buttons">
+                        <button onclick="nextVisitor()">Следующий посетитель</button>
+                    </div>
                 </div>
             </div>
             
             <div id="game-over" style="display: none;">
                 <div id="game-over-message" class="game-over"></div>
-                <div style="text-align: center;">
+                <div class="buttons">
                     <button class="restart-btn" onclick="restartGame()">Сыграть снова</button>
                 </div>
             </div>
@@ -199,6 +401,22 @@
             {
                 text: "Отправьте денежный перевод в Москву",
                 answer: "отправить перевод"
+            },
+            {
+                text: "Хочется избавиться от всей этой мелочевки",
+                answer: "разменять мелкие деньги"
+            },
+            {
+                text: "Поменяйте крупную банкноту на разменные",
+                answer: "разменять крупные деньги"
+            },
+            {
+                text: "Продам вам доллары по курсу",
+                answer: "обменять валюту"
+            },
+            {
+                text: "Нужно послать денег маме в деревню",
+                answer: "отправить перевод"
             }
         ];
         
@@ -213,52 +431,51 @@
         }
         
         function nextVisitor() {
-            if (score >= 10) {
-                gameOver(true);
-                return;
-            }
-            if (score <= -5) {
-                gameOver(false);
-                return;
-            }
-            
+        // Победа/поражение проверяем сразу при входе
+            if (score >= 10) { gameOver(true); return; }
+            if (score <= -5) { gameOver(false); return; }
+
             visitorCount++;
             const randomRequest = requests[Math.floor(Math.random() * requests.length)];
             currentRequest = randomRequest.answer;
-            
+
+            // Обновляем текст вопроса
             document.getElementById('visitor-request').textContent = randomRequest.text;
+
+            // Переключаем UI: показываем ответы, прячем результат
+            document.getElementById('answer-buttons').style.display = 'flex';
             document.getElementById('result').style.display = 'none';
             document.getElementById('next-button').style.display = 'none';
-            
-            // Показываем кнопки выбора
-            const buttons = document.querySelectorAll('.buttons button');
-            buttons.forEach(btn => btn.style.display = 'block');
-            
+
             updateScore();
         }
-        
+
         function makeChoice(choice) {
             const resultDiv = document.getElementById('result');
-            const nextBtn = document.getElementById('next-button');
-            
-            // Скрываем кнопки выбора
-            const buttons = document.querySelectorAll('.buttons button');
-            buttons.forEach(btn => btn.style.display = 'none');
-            
+
+            // Скрываем ответы
+            document.getElementById('answer-buttons').style.display = 'none';
+
             if (choice === currentRequest) {
                 score++;
-                resultDiv.innerHTML = 'Правильно! +1 балл';
+                resultDiv.innerHTML = '✅ Правильно! +1 балл';
                 resultDiv.className = 'result correct';
             } else {
                 score--;
-                resultDiv.innerHTML = 'Неправильно! -1 балл';
+                resultDiv.innerHTML = '❌ Неправильно! -1 балл';
                 resultDiv.className = 'result incorrect';
             }
-            
+
             resultDiv.style.display = 'block';
-            nextBtn.style.display = 'block';
+            document.getElementById('next-button').style.display = 'block';
+
+            // Здесь же сразу проверим победу/поражение, чтобы не зависеть только от nextVisitor
+            if (score >= 3) { gameOver(true); return; }
+            if (score <= -1) { gameOver(false); return; }
+
             updateScore();
         }
+
         
         function updateScore() {
             document.getElementById('score').textContent = score;
